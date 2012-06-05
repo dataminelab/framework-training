@@ -1,0 +1,1 @@
+hadoop dfs -copyFromLocal ./words.txt /user/training/words.txt
