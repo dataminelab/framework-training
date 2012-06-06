@@ -1,8 +1,8 @@
-register file:/usr/lib/pig/contrib/piggybank/java/piggybank.jar;
-DEFINE EXTRACT org.apache.pig.piggybank.evaluation.string.EXTRACT;
+-- based on http://aws.amazon.com/articles/2729
+RAW_LOGS = LOAD '/user/training/pig-apache/input/access_log_0' USING TextLoader as (line:chararray);
 LOGS = FOREACH RAW_LOGS GENERATE 
     FLATTEN( 
-      EXTRACT(line, '^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] "(.+?)" (\\S+) (\\S+) "([^"]*)" "([^"]*)"')
+      REGEX_EXTRACT_ALL(line, '^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] "(.+?)" (\\S+) (\\S+) "([^"]*)" "([^"]*)"')
     ) 
     as (
       remoteAddr:    chararray, 
@@ -15,5 +15,18 @@ LOGS = FOREACH RAW_LOGS GENERATE
       referrer:      chararray, 
       browser:       chararray
   );
-DOMAINS = FOREACH LOGS GENERATE FLATTEN(EXTRACT(referrer, 'http[s]?://(^/+)[/]?.*')) as terms:chararray;
+REFERRER_ONLY = FOREACH LOGS GENERATE referrer;
 
+TEMP = LIMIT REFERRER_ONLY 15;
+DUMP TEMP;
+
+FILTERED = FILTER REFERRER_ONLY BY referrer matches '.*bing.*' OR referrer matches '.*google.*';
+TEMP = LIMIT FILTERED 10;
+DUMP TEMP;
+
+SEARCH_TERMS_COUNT = FOREACH (GROUP SEARCH_TERMS_FILTERED BY $0) GENERATE $0, COUNT($1) as num;
+SEARCH_TERMS_COUNT_SORTED = ORDER SEARCH_TERMS_COUNT BY num DESC;
+DUMP SEARCH_TERMS_COUNT_SORTED;
+
+STORE SEARCH_TERMS_COUNT_SORTED into '/user/training/output/run0';
+CAT '/user/training/output/run0';
