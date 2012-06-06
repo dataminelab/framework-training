@@ -1,5 +1,5 @@
-create table textlines(text string);
-load data local inpath 'C:\work\ClearPoint\Data20\data\words.txt' overwrite into table textlines;
-create table words(word string);
-insert overwrite table words select explode(split(text, '[ \t]+')) word from textlines;
-select word, count(*) from words group by word;
+CREATE TABLE lines(text string);
+LOAD DATA LOCAL INPATH '/user/training/words.txt' OVERWRITE INTO TABLE lines;
+CREATE TABLE words(word string);
+INSERT OVERWRITE TABLE words SELECT EXPLODE(split(text, '[ \t]+')) word from lines;
+SELECT word, count(*) FROM words GROUP BY word;
