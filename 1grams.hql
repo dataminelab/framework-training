@@ -79,11 +79,12 @@ ON
  a.gram = b.gram and
  a.decade - 1 = b.decade
 WHERE
- a.ratio > 0.000001 and
+ a.ratio > 0.001 and
  a.decade >= 190
 DISTRIBUTE BY
  decade
 SORT BY
  decade ASC,
- increase DESC;
+ increase DESC
+LIMIT 200;
  
