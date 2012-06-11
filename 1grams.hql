@@ -29,7 +29,7 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
 LOCATION 's3://yourname-output/ngrams/1gram/';
 
-INSERT OVERWRITE INTO english_1grams_small
+INSERT OVERWRITE TABLE english_1grams_small
 SELECT * FROM english_1grams LIMIT 500000;
 
 -- normalize the data
