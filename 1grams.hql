@@ -1,3 +1,7 @@
+https://github.com/dataminelab/framework-training/
+
+1grams.hql
+
 -- based on Amazon tutorial: http://aws.amazon.com/articles/Elastic-MapReduce/5249664154115844
 
 set hive.base.inputformat=org.apache.hadoop.hive.ql.io.HiveInputFormat;
@@ -14,6 +18,20 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
 LOCATION 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/';
 
+CREATE EXTERNAL TABLE english_1grams_small (
+ gram string,
+ year int,
+ occurrences bigint,
+ pages bigint,
+ books bigint
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+STORED AS SEQUENCEFILE
+LOCATION 's3://yourname-output/ngrams/1gram/';
+
+INSERT OVERWRITE INTO english_1grams_small
+SELECT * FROM english_1grams LIMIT 500000;
+
 -- normalize the data
 
 CREATE TABLE normalized (
@@ -28,7 +46,7 @@ SELECT
  year,
  occurrences
 FROM
- english_1grams
+ english_1grams_small
 WHERE
  year >= 1890 AND
  gram REGEXP "^[A-Za-z+'-]+$";
