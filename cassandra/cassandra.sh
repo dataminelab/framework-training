@@ -1,6 +1,7 @@
 #!/bin/bash
 
 HOST="localhost"
+CASSANDRA_PID_DIR=/tmp/
 
 mkdir -p target
 cd target
