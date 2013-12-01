@@ -1,3 +1,5 @@
+-- add jar /home/hadoop/hive/lib/hive_contrib.jar;
+
 CREATE TABLE logs (
   host STRING,
   identity STRING,
