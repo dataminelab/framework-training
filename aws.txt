@@ -1,0 +1,6 @@
+After starting the cluster clone the files:
+git clone https://github.com/dataminelab/framework-training.git
+
+
+TODO:
+- show how to add a step through AWS UI
