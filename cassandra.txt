@@ -1,0 +1,18 @@
+./cassandra/bin/cqlsh
+
+CREATE KEYSPACE twissandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
+
+USE twissandra;
+
+CREATE TABLE users ( username text 
+                           PRIMARY KEY, password text);
+CREATE TABLE following ( username text, followed text, 
+                           PRIMARY KEY(username, followed));
+
+CREATE TABLE followers ( username text, following text, 
+                           PRIMARY KEY(username, following));
+
+CREATE TABLE tweets ( tweetid uuid 
+                          PRIMARY KEY, username text, body text);
+
+
