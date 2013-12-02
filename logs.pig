@@ -33,4 +33,4 @@ SEARCH_TERMS_COUNT_SORTED = ORDER SEARCH_TERMS_COUNT BY num DESC;
 DUMP SEARCH_TERMS_COUNT_SORTED;
 
 STORE SEARCH_TERMS_COUNT_SORTED into '/user/training/output/run0';
-CAT '/user/training/output/run0';
+CAT /user/training/output/run0;
