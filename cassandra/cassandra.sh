@@ -29,6 +29,9 @@ cp ./conf/log4j-server.properties ./target/cassandra/conf/log4j-server.propertie
 
 sed -e "s@CASSANDRA_PID_DIR@$CASSANDRA_PID_DIR@" \
                 ./start.sh > ./target/cassandra/bin/start.sh
+chmod +x ./target/cassandra/bin/start.sh
 
 sed -e "s@CASSANDRA_PID_DIR@$CASSANDRA_PID_DIR@" \
         < ./stop.sh > ./target/cassandra/bin/stop.sh
+chmod +x ./target/cassandra/bin/stop.sh
+
