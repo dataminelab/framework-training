@@ -1,0 +1,32 @@
+== Install Storm (local mode) ==
+
+cd ~
+wget https://www.dropbox.com/s/fl4kr7w0oc8ihdw/storm-0.8.2.zip
+unzip storm-0.8.2.zip
+export PATH=$PATH:~/storm-0.8.2/bin
+
+# See: https://github.com/nathanmarz/storm/wiki/Setting-up-development-environment
+
+== Leiningen (Clojure build system) == 
+
+cd ~/bin
+# export PATH=$PATH:~/bin
+wget https://raw.github.com/technomancy/leiningen/stable/bin/lein
+chmod +x ~/bin/lein
+
+== Storm started ==
+
+cd 
+git clone https://github.com/nathanmarz/storm-starter
+cd ~/storm-starter
+
+# Build
+lein deps
+lein compile
+
+# Run a sample topology
+lein run -m storm.starter.clj.word-count
+
+# See: https://github.com/nathanmarz/storm/wiki/Clojure-DSL
+
+# For an implementation of Storm Protocol see: https://github.com/rathko/storm/blob/master/src/multilang/R/storm.R

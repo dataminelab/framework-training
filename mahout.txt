@@ -46,5 +46,11 @@ hadoop fs -getmerge output output.txt
 
 python ../framework-training/mahout_show_recommendations.py 4 u.data u.item output.txt
 
+# Where:
+# 4 - user ID
+# u.data - user data file
+# u.item - movie filename
+# output.txt - recommendations
+
 References:
 http://chimpler.wordpress.com/2013/02/20/playing-with-the-mahout-recommendation-engine-on-a-hadoop-cluster/
