@@ -1,0 +1,84 @@
+== Installation ==
+
+http://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/
+
+   sudo mkdir /var/lib/mongo
+   sudo chmod a+w /var/lib/mongo
+   sudo chmod a+w /var/log/mongo
+   sudo mkdir -p /var/log/mongo
+
+== Offical Tutorial ==
+
+$ mongo
+
+help
+
+db
+
+show dbs
+
+use mydb
+
+
+-- Create and insert first documents
+
+j = { name : "mongo" }
+k = { x : 3 }
+
+db.testData.insert( j )
+db.testData.insert( k )
+
+show collections
+
+db.testData.find()
+
+-- Query data
+
+var c = db.testData.find()
+while ( c.hasNext() ) printjson( c.next() )
+
+var c = db.testData.find()
+printjson( c [ 1 ] )
+
+-- Searching
+
+db.testData.find( { x : 3 } )
+
+-- Limit
+
+db.testData.find().limit(3)
+
+
+-- JavaScript
+
+Command line is in JavaScript!
+for(i=0; i<10; i++) { print('hello'); }; 
+
+for(i=0; i<10; i++) { db.scores.save({a: i, exam: 5}) }; 
+
+db.scores.find({a: {'$gt': 5}}); 
+
+  $lt  - '<',   $lte - '<=', 
+  $gte - '>=',  $ne  - '!='
+  $in - 'is in array',  $nin - '! in array'
+
+db.scores.find({a: {'$in': [2, 3, 4]}}); 
+
+-- Updating
+
+db.users.save({name: 'Johnny', languages: ['ruby', 'c']});
+db.users.save({name: 'Sue', languages: ['scala', 'lisp']});
+
+
+
+db.users.update({name: 'Johnny'}, {name: 'Cash', languages: ['english']});
+-- partial updates
+db.users.update({name: 'Cash'}, {'$set': {'age': 50} });
+db.users.update({name: 'Sue'}, {'$pull': {'languages': 'scala'} }); 
+db.users.remove({name: 'Sue'});
+
+-- References
+
+http://docs.mongodb.org/manual/tutorial/getting-started/
+http://try.mongodb.org/
+
