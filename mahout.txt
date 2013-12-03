@@ -1,0 +1,50 @@
+== Installation ==
+
+=== maven ===
+
+wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
+tar xzvf apache-maven-3.1.1-bin.tar.gz
+
+== mahout ===
+
+Download latest release:
+http://www.apache.org/dyn/closer.cgi/mahout/
+
+wget http://apache.mirror.anlx.net/mahout/0.7/mahout-distribution-0.7-src.tar.gz
+tar xzvf ./mahout-distribution-0.7-src.tar.gz
+sudo find ./mahout-distribution-0.7 -type d -exec chmod +rx {} \;
+
+# build
+~/apache-maven-3.1.1/bin/mvn compile
+~/apache-maven-3.1.1/bin/mvn package -DskipTests
+
+cd ..
+
+== Recommendation engine ==
+
+wget http://www.grouplens.org/system/files/ml-100k.zip
+unzip ./ml-100k.zip
+
+This archive contains:
+u.data: contains several tuples(user_id, movie_id, rating, timestamp)
+u.user: contains several tuples(user_id, age, gender, occupation, zip_code)
+u.item: contains several tuples(movie_id, title, release_date, video_release_data, imdb_url, cat_unknown, cat_action, cat_adventure, cat_animation, cat_children, cat_comedy, cat_crime, cat_documentary, cat_drama, cat_fantasy, cat_film_noir, cat_horror, cat_musical, cat_mystery, cat_romance, cat_sci_fi, cat_thriller, cat_war, cat_western)
+
+# Add data to HDFS
+cd ml-100k
+hadoop fs -put u.data u.data
+
+# Run recommendation engine
+export MAHOUT_HOME=/home/hadoop/mahout-distribution-0.7/core/target/
+hadoop jar $MAHOUT_HOME/mahout-core-0.7-job.jar org.apache.mahout.cf.taste.hadoop.item.RecommenderJob -s SIMILARITY_COOCCURRENCE --input u.data --output output
+
+# SIMILARITY COOCURRENCE, two items(movies) are very similar if they often appear together in users’ rating
+# See: http://grepcode.com/file/repo1.maven.org/maven2/org.apache.mahout/mahout-core/0.7/org/apache/mahout/math/hadoop/similarity/cooccurrence/measures/VectorSimilarityMeasures.java
+
+# Merge output
+hadoop fs -getmerge output output.txt
+
+python ../framework-training/mahout_show_recommendations.py 4 u.data u.item output.txt
+
+References:
+http://chimpler.wordpress.com/2013/02/20/playing-with-the-mahout-recommendation-engine-on-a-hadoop-cluster/
