@@ -18,19 +18,19 @@ ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
 LOCATION 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/';
 
-CREATE EXTERNAL TABLE english_1grams_small (
- gram string,
- year int,
- occurrences bigint,
- pages bigint,
- books bigint
-)
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-STORED AS SEQUENCEFILE
-LOCATION 's3://yourname-output/ngrams/1gram/';
+-- CREATE EXTERNAL TABLE english_1grams_small (
+--  gram string,
+--  year int,
+--  occurrences bigint,
+--  pages bigint,
+--  books bigint
+-- )
+-- ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+-- STORED AS SEQUENCEFILE
+-- LOCATION 's3://ft-bucket1/ngrams/1gram/';
 
-INSERT OVERWRITE TABLE english_1grams_small
-SELECT * FROM english_1grams LIMIT 500000;
+-- INSERT OVERWRITE TABLE english_1grams_small
+-- SELECT * FROM english_1grams LIMIT 5000000;
 
 -- normalize the data
 
@@ -46,7 +46,7 @@ SELECT
  year,
  occurrences
 FROM
- english_1grams_small
+ english_1grams
 WHERE
  year >= 1890 AND
  gram REGEXP "^[A-Za-z+'-]+$";
