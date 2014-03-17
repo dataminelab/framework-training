@@ -1,6 +1,39 @@
+AWS:
+# Instance types: http://aws.amazon.com/ec2/instance-types/
+# Check spot prices: Amazon EC2 console, click Spot Requests.
+# Current spot prices: https://aws.amazon.com/ec2/purchasing-options/spot-instances/
+# Compare to normal prices: http://aws.amazon.com/ec2/pricing/
+
+AWS steps:
+# Read access and secret keys (see “Security Credentials” on account page)
+# Go to: https://console.aws.amazon.com/ec2/home
+# Click on Key Pairs
+# Create ssh key/pair: https://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-plan-access-ssh.html
+# Create S3 bucket, it will be created automatically though
+# Elastic Map Reduce -> create cluster
+# Add HBase in "Applications to be installed"
+# Request spot instances
+# Choose EC2 availability zone according to spot prices
+
+# When connecting through SSH
+
 After starting the cluster clone the files:
 git clone https://github.com/dataminelab/framework-training.git
 
 
-TODO:
-- show how to add a step through AWS UI
+# Upload data to HDFS
+cd framework-training
+./upload-data-to-hdfs.sh
+
+# Run analysis and check the output
+https://hadoop.apache.org/docs/r1.2.1/file_system_shell.html
+
+# Useful for downloading all results
+hadoop dfs -getmerge /user/training/words-output-2/ ./parts.txt
+
+
+# Look into Java word-count
+
+# Real life word count
+
+
