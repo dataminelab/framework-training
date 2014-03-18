@@ -25,7 +25,7 @@ GET pages:about
 HSET goku power 9001
 HGET goku power
 
-# Lists
+# Set
 SADD friends:leto ghanima
 SADD friends:leto duncan
 SADD friends:paul duncan
@@ -33,10 +33,10 @@ SADD friends:paul gurney
 SINTER friends:leto friends:paul
 
 # Sorted sets
-ZADD friends:leto 1000 ghanima
-ZADD friends:leto 994 duncan
-ZADD friends:leto 2 farad'n
-ZRANGEBYSCORE friends:leto 500 1000
+ZADD friends2:leto 1000 ghanima
+ZADD friends2:leto 994 duncan
+ZADD friends2:leto 2 farad'n
+ZRANGEBYSCORE friends2:leto 500 1000
 
 
 
