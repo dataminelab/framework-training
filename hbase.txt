@@ -3,7 +3,7 @@ hbase shell
 
 create 'testtable', 'colfam'
 
-list 'testtable'
+list
 
 put 'testtable', 'myrow1', 'colfam:q1', 'value-1'
 put 'testtable', 'myrow1', 'colfam:q2', 'value-2'
@@ -21,3 +21,6 @@ scan 'testtable'
 
 disable 'testtable'
 drop 'testtable'
+
+# See reference to commands:
+# http://wiki.apache.org/hadoop/Hbase/Shell
