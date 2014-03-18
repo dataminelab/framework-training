@@ -10,9 +10,9 @@ tar xzvf apache-maven-3.1.1-bin.tar.gz
 Download latest release:
 http://www.apache.org/dyn/closer.cgi/mahout/
 
-wget http://apache.mirror.anlx.net/mahout/0.7/mahout-distribution-0.7-src.tar.gz
-tar xzvf ./mahout-distribution-0.7-src.tar.gz
-sudo find ./mahout-distribution-0.7 -type d -exec chmod +rx {} \;
+wget http://apache.mirrors.timporter.net/mahout/0.9/mahout-distribution-0.9-src.tar.gz
+tar xzvf ./mahout-distribution-0.9-src.tar.gz
+sudo find ./mahout-distribution-0.9 -type d -exec chmod +rx {} \;
 
 # build
 ~/apache-maven-3.1.1/bin/mvn compile
