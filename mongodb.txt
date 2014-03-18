@@ -3,9 +3,9 @@
 http://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/
 
    sudo mkdir /var/lib/mongo
+   sudo mkdir -p /var/log/mongo
    sudo chmod a+w /var/lib/mongo
    sudo chmod a+w /var/log/mongo
-   sudo mkdir -p /var/log/mongo
 
 == Offical Tutorial ==
 
