@@ -1,0 +1,36 @@
+cd
+mkdir redis
+cd redis
+wget http://download.redis.io/releases/redis-2.8.7.tar.gz
+tar -zxf redis-2.8.7.tar.gz
+cd redis-2.8.7
+make
+sudo make install
+
+
+# Tutorial
+
+# Strings
+SET pages:about "about us"
+GET pages:about
+
+# Hash sets
+HSET goku power 9001
+HGET goku power
+
+# Lists
+SADD friends:leto ghanima
+SADD friends:leto duncan
+SADD friends:paul duncan
+SADD friends:paul gurney
+SINTER friends:leto friends:paul
+
+# Sorted sets
+ZADD friends:leto 1000 ghanima
+ZADD friends:leto 994 duncan
+ZADD friends:leto 2 farad'n
+ZRANGEBYSCORE friends:leto 500 1000
+
+
+
+# Based on tutorial from: http://openmymind.net/2011/11/8/Redis-Zero-To-Master-In-30-Minutes-Part-1/
