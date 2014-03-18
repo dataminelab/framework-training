@@ -7,6 +7,13 @@ cd redis-2.8.7
 make
 sudo make install
 
+sudo apt-get install screen
+
+screen -S redis
+redis-server
+Ctrl+A Ctrl+D
+
+redis-cli
 
 # Tutorial
 
