@@ -37,6 +37,9 @@ https://github.com/apache/hadoop-common/blob/trunk/hadoop-mapreduce-project/hado
 
 # run it:
 
+javac -cp `hadoop classpath`:. -d java/target java/src/org/apache/*
+jar -cvf ./examples.jar -C java/target .
+
 hdfs dfs -mkdir /user/root/join
 hdfs dfs -copyFromLocal join/* /user/root/join/
 
@@ -49,3 +52,8 @@ yarn jar ./examples.jar org.apache.Join \
   join/a.txt join/b.txt joinout
 
 hdfs dfs -text /user/root/joinout/part-r-00000
+
+# see
+https://github.com/hanborq/hadoop/blob/master/src/mapred/org/apache/hadoop/mapred/join/CompositeInputFormat.java
+https://github.com/facebook/hadoop-20/blob/master/src/mapred/org/apache/hadoop/mapred/join/InnerJoinRecordReader.java
+
