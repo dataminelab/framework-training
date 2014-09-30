@@ -2,6 +2,7 @@ AWS:
 # Instance types: http://aws.amazon.com/ec2/instance-types/
 # Check spot prices: Amazon EC2 console, click Spot Requests.
 # Current spot prices: https://aws.amazon.com/ec2/purchasing-options/spot-instances/
+# http://ec2price.com/?product=Linux/UNIX&type=m1.medium&region=us-east-1&window=60
 # Compare to normal prices: http://aws.amazon.com/ec2/pricing/
 
 AWS steps:
