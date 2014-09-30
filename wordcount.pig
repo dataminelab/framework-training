@@ -4,3 +4,5 @@ groupOfWords = GROUP words BY word;
 counts = FOREACH groupOfWords GENERATE group, COUNT(words);
 STORE counts INTO '/user/root/output/wordcounts' USING PigStorage();
 CAT /user/root/output/wordcounts;
+
+# see: http://pig.apache.org/docs/r0.7.0/piglatin_ref2.html
