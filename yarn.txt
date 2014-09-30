@@ -1,0 +1,51 @@
+yarn jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar
+
+source code:
+https://github.com/apache/hadoop-common/tree/trunk/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples
+
+
+Pi example:
+
+yarn jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 16 1000
+
+# Sample Yarn (Non Map-Reduce application)
+cd 
+mkdir maven
+wget http://mirror.catn.com/pub/apache/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
+tar xvf apache-maven-3.2.3-bin.tar.gz
+mv apache-maven-3.2.3 /usr/local/apache-maven
+export M2_HOME=/usr/local/apache-maven
+export M2=$M2_HOME/bin 
+export PATH=$M2:$PATH
+
+cd
+
+git clone https://github.com/trisberg/yarn-examples.git
+
+cd yarn-examples
+
+mvn package
+cd simple-yarn-example
+
+hdfs dfs -copyFromLocal target/simple-yarn-app-0.1.0.jar /apps/simple/simple-yarn-app-0.1.0.jar
+
+yarn jar target/simple-yarn-app-0.1.0.jar com.springdeveloper.demo.Client 1
+
+Join example:
+
+https://github.com/apache/hadoop-common/blob/trunk/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples/Join.java
+
+# run it:
+
+hdfs dfs -mkdir /user/root/join
+hdfs dfs -copyFromLocal join/* /user/root/join/
+
+# testing
+hdfs dfs -rm -f -r /user/root/joinout
+
+yarn jar ./examples.jar org.apache.Join \
+  -outKey org.apache.hadoop.io.Text \
+  -joinOp outer \
+  join/a.txt join/b.txt joinout
+
+hdfs dfs -text /user/root/joinout/part-r-00000
