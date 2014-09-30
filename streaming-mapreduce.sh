@@ -1,2 +1,1 @@
-export HADOOP_HOME=/home/hadoop
-hadoop jar $HADOOP_HOME/contrib/streaming/hadoop-streaming*.jar -file ./mapper.py -mapper ./mapper.py -file ./reducer.py -reducer ./reducer.py -input /user/training/words.txt -output /user/training/words-output
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar -files ./mapper.py ./reducer.py -mapper ./mapper.py -reducer ./reducer.py -input /user/training/words.txt -output /user/training/words-output
