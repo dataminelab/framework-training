@@ -1,5 +1,5 @@
 -- based on http://aws.amazon.com/articles/2729
-RAW_LOGS = LOAD '/user/training/pig-apache/input/access_log_0' USING TextLoader as (line:chararray);
+RAW_LOGS = LOAD '/user/root/pig-apache/input/access_log_0' USING TextLoader as (line:chararray);
 LOGS = FOREACH RAW_LOGS GENERATE 
     FLATTEN( 
       REGEX_EXTRACT_ALL(line, '^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] "(.+?)" (\\S+) (\\S+) "([^"]*)" "([^"]*)"')
@@ -32,5 +32,5 @@ SEARCH_TERMS_COUNT = FOREACH (GROUP SEARCH_TERMS_FILTERED BY $0) GENERATE $0, CO
 SEARCH_TERMS_COUNT_SORTED = ORDER SEARCH_TERMS_COUNT BY num DESC;
 DUMP SEARCH_TERMS_COUNT_SORTED;
 
-STORE SEARCH_TERMS_COUNT_SORTED into '/user/training/output/run0';
-CAT /user/training/output/run0;
+STORE SEARCH_TERMS_COUNT_SORTED into '/user/root/output/run0';
+CAT /user/root/output/run0;
