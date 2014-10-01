@@ -1,18 +1,16 @@
 == Installation ==
 
-http://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/
+## mongodb installation
 
-   sudo mkdir /var/lib/mongo
-   sudo mkdir -p /var/log/mongo
-   sudo chmod a+w /var/lib/mongo
-   sudo chmod a+w /var/log/mongo
+curl -O http://downloads.mongodb.org/linux/mongodb-linux-x86_64-2.6.4.tgz
+tar -zxvf mongodb-linux-x86_64-2.6.4.tgz
+mv mongodb-linux-x86_64-2.6.4 mongo
+export PATH=/home/hadoop/mongo/bin:$PATH
+mkdir mongodata
+mongod --dbpath /home/hadoop/mongodata --smallfiles &
 
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-sudo apt-get update
-sudo apt-get install mongodb-10gen=2.2.3
 
-== Offical Tutorial ==
+==
 
 $ mongo
 
