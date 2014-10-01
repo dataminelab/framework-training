@@ -24,8 +24,8 @@ git clone https://github.com/trisberg/yarn-examples.git
 
 cd yarn-examples
 
-mvn package
 cd simple-yarn-example
+mvn package
 
 hdfs dfs -copyFromLocal target/simple-yarn-app-0.1.0.jar /apps/simple/simple-yarn-app-0.1.0.jar
 
