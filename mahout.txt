@@ -16,7 +16,6 @@ sudo find ./mahout-distribution-0.9 -type d -exec chmod +rx {} \;
 cd ./mahout-distribution-0.9
 
 # build
-~/apache-maven-3.1.1/bin/mvn compile
 ~/apache-maven-3.1.1/bin/mvn package -DskipTests
 
 cd ..
@@ -33,17 +32,18 @@ u.item: contains several tuples(movie_id, title, release_date, video_release_dat
 
 # Add data to HDFS
 cd ml-100k
-hadoop fs -put u.data u.data
+hadoop fs -mkdir -p /maven
+hadoop fs -copyFromLocal ml-100k/u.data /maven/u.data
 
 # Run recommendation engine
-export MAHOUT_HOME=/home/hadoop/mahout-distribution-0.7/core/target/
-hadoop jar $MAHOUT_HOME/mahout-core-0.7-job.jar org.apache.mahout.cf.taste.hadoop.item.RecommenderJob -s SIMILARITY_COOCCURRENCE --input u.data --output output
+export MAHOUT_HOME=/home/hadoop/mahout-distribution-0.9/core/target/
+hadoop jar $MAHOUT_HOME/mahout-core-0.9-job.jar org.apache.mahout.cf.taste.hadoop.item.RecommenderJob -s SIMILARITY_COOCCURRENCE --input /maven/u.data --output /maven/output
 
 # SIMILARITY COOCURRENCE, two items(movies) are very similar if they often appear together in users’ rating
 # See: http://grepcode.com/file/repo1.maven.org/maven2/org.apache.mahout/mahout-core/0.7/org/apache/mahout/math/hadoop/similarity/cooccurrence/measures/VectorSimilarityMeasures.java
 
 # Merge output
-hadoop fs -getmerge output output.txt
+hadoop fs -getmerge /maven/output output.txt
 
 python ../framework-training/mahout_show_recommendations.py 4 u.data u.item output.txt
 
