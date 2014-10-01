@@ -140,3 +140,19 @@ GET /megacorp/employee/2
 
 
 # see more at: http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/index.html
+
+git clone https://github.com/andrewvc/ee-datasets.git
+cd ee-datasets/
+java -jar elastic-loader.jar http://localhost:9200 datasets/darwin-origin.eloader
+# source code: https://github.com/andrewvc/elastic-loader
+
+POST darwin-origin/chapter/_search?pretty=true
+{
+  "query": {
+   "match": {"text": "beagle"}
+  },
+  "fields": ["numeral", "title"],
+  "highlight": {
+    "fields": {"text": {"number_of_fragments": 3}}
+  }
+}
