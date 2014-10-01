@@ -7,8 +7,7 @@ tar -zxvf mongodb-linux-x86_64-2.6.4.tgz
 mv mongodb-linux-x86_64-2.6.4 mongo
 export PATH=/home/hadoop/mongo/bin:$PATH
 mkdir mongodata
-mongod --dbpath /home/hadoop/mongodata --smallfiles &
-
+mongod --dbpath /home/hadoop/mongodata --smallfiles --quiet &
 
 ==
 
