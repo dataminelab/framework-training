@@ -7,6 +7,7 @@ https://github.com/apache/hadoop-common/tree/trunk/hadoop-mapreduce-project/hado
 Pi example:
 
 yarn jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 16 1000
+# see: http://arxiv.org/abs/1008.3171
 
 # Sample Yarn (Non Map-Reduce application)
 cd 
@@ -30,6 +31,8 @@ mvn package
 hdfs dfs -copyFromLocal target/simple-yarn-app-0.1.0.jar /apps/simple/simple-yarn-app-0.1.0.jar
 
 yarn jar target/simple-yarn-app-0.1.0.jar com.springdeveloper.demo.Client 1
+
+# Note, consider Weave: https://github.com/continuuity/weave
 
 Join example:
 

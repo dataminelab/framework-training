@@ -1,17 +1,17 @@
 cd
 mkdir redis
 cd redis
-wget http://download.redis.io/releases/redis-2.8.7.tar.gz
-tar -zxf redis-2.8.7.tar.gz
-cd redis-2.8.7
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
 make
 sudo make install
-
-sudo apt-get install screen
 
 screen -S redis
 redis-server
 Ctrl+A Ctrl+D
+# or simply
+redis-server &
 
 redis-cli
 
@@ -38,6 +38,57 @@ ZADD friends2:leto 994 duncan
 ZADD friends2:leto 2 farad'n
 ZRANGEBYSCORE friends2:leto 500 1000
 
+# counters
+SET foo 10
+INCR foo
+INCR foo
+GET foo
 
+# lists
+LPUSH mylist a
+LPUSH mylist b
+LPUSH mylist c
+LRANGE mylist 0 3
 
-# Based on tutorial from: http://openmymind.net/2011/11/8/Redis-Zero-To-Master-In-30-Minutes-Part-1/
+# sets intersections
+SADD mynewset b
+SADD mynewset foo
+SINTER myset mynewset
+
+# transactions
+MULTI
+SET bar 6
+INCRBY bar 10
+INCR foo
+EXEC
+
+# Twitter clone
+
+# user ID
+INCR next_user_id
+
+# set user record
+HMSET user:1 username antirez password passhash
+HGETALL user:1
+
+# hashmap of all users IDS
+HSET users antirez 1
+
+# add user 1234 with time 1401267618
+# followers of user 1
+ZADD followers:1 1401267618 1234
+# users whom user 1 follows
+ZADD following:1234 1401267618 1
+
+# posts
+LPUSH posts:1 "Hello world"
+LRANGE posts:1 0 3
+
+# user sessions
+HSET user:1 auth fea5e81ac8ca77622bed1c2132a021f9
+HSET auths fea5e81ac8ca77622bed1c2132a021f9 1
+
+# to stop redis-server
+fg
+ctrl+c
+

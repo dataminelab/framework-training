@@ -2,6 +2,7 @@ AWS:
 # Instance types: http://aws.amazon.com/ec2/instance-types/
 # Check spot prices: Amazon EC2 console, click Spot Requests.
 # Current spot prices: https://aws.amazon.com/ec2/purchasing-options/spot-instances/
+# http://ec2price.com/?product=Linux/UNIX&type=m1.medium&region=us-east-1&window=60
 # Compare to normal prices: http://aws.amazon.com/ec2/pricing/
 
 AWS steps:
@@ -17,23 +18,11 @@ AWS steps:
 
 # When connecting through SSH
 
-After starting the cluster clone the files:
-git clone https://github.com/dataminelab/framework-training.git
-
-
-# Upload data to HDFS
-cd framework-training
-./upload-data-to-hdfs.sh
-
 # Run analysis and check the output
 https://hadoop.apache.org/docs/r1.2.1/file_system_shell.html
 
 # Useful for downloading all results
 hadoop dfs -getmerge /user/training/words-output-2/ ./parts.txt
 
-
-# Look into Java word-count
-
-# Real life word count
 
 
