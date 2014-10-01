@@ -1,1 +1,1 @@
-hadoop jar ./wordcount.jar org.apache.WordCount /user/training/words.txt /user/training/words-output-2
+hadoop jar ./wordcount.jar org.apache.WordCount /user/root/words.txt /user/root/words-output-2
