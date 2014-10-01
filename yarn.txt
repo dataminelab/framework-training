@@ -10,27 +10,22 @@ yarn jar /usr/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 16 1000
 # see: http://arxiv.org/abs/1008.3171
 
 # Sample Yarn (Non Map-Reduce application)
-cd 
-mkdir maven
 wget http://mirror.catn.com/pub/apache/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
 tar xvf apache-maven-3.2.3-bin.tar.gz
-mv apache-maven-3.2.3 /usr/local/apache-maven
+sudo mv apache-maven-3.2.3 /usr/local/apache-maven
 export M2_HOME=/usr/local/apache-maven
 export M2=$M2_HOME/bin 
 export PATH=$M2:$PATH
 
-cd
+hadoop jar /usr/lib/hadoop-yarn/hadoop-yarn-applications-distributedshell.jar org.apache.hadoop.yarn.applications.distributedshell.Client --jar /usr/lib/hadoop-yarn/hadoop-yarn-applications-distributedshell.jar --shell_command "touch /tmp/test123" --num_containers 1
 
-git clone https://github.com/trisberg/yarn-examples.git
+# see source code
+https://github.com/apache/hadoop-common/tree/trunk/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/src/main/java/org/apache/hadoop/yarn/applications/distributedshell
 
-cd yarn-examples
+# to see logs it might be necessary to add sandbox to the /etc/hosts
+sudo vi /etc/hosts
+127.0.0.1 sandbox.hortonworks.com
 
-cd simple-yarn-example
-mvn package
-
-hdfs dfs -copyFromLocal target/simple-yarn-app-0.1.0.jar /apps/simple/simple-yarn-app-0.1.0.jar
-
-yarn jar target/simple-yarn-app-0.1.0.jar com.springdeveloper.demo.Client 1
 
 # Note, consider Weave: https://github.com/continuuity/weave
 
