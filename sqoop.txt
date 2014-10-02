@@ -1,0 +1,76 @@
+## Sqoop
+
+# Hadoop 1.0 required
+
+# installation
+wget http://www.mirrorservice.org/sites/ftp.apache.org/sqoop/1.4.5/sqoop-1.4.5.bin__hadoop-1.0.0.tar.gz
+tar xzvf sqoop-1.4.5.bin__hadoop-1.0.0.tar.gz
+sudo mv sqoop-1.4.5.bin__hadoop-1.0.0 /usr/lib/sqoop
+cd /usr/lib/sqoop/
+export PATH=$PATH:/usr/lib/sqoop/bin/
+
+# Download MySQL JDBC driver
+wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.30.tar.gz
+tar xzvf ./mysql-connector-java-5.1.30.tar.gz
+cp mysql-connector-java-5.1.30/mysql-connector-java-5.1.30-bin.jar /usr/lib/sqoop/lib/
+
+
+# Let's import sample MySQL data first
+# Who've heard about Enron?
+# https://www.youtube.com/watch?v=1dNZaKLjYbc
+# Forensic public database: 250k messages, 1.5M receipients
+
+wget https://s3.amazonaws.com/rjurney_public_web/images/enron.mysql.5.5.20.sql.gz
+
+gzip -d enron.mysql.5.5.20.sql.gz
+
+mysql -u root -e 'create database enron'
+
+# import data
+mysql -u root < enron.mysql.5.5.20.sql
+
+
+# create new table with the data we are interested in
+mysql -u root enron
+grant all on enron.* to 'enron'@'%' identified by 'enr0n';
+grant all on enron.* to 'enron'@localhost identified by 'enr0n';
+
+# just for this experiment (not recommended overall)
+sudo vi /etc/mysql/my.cnf
+bind-address = 0.0.0.0
+sudo /etc/init.d/mysql restart
+
+# test it
+mysql -u enron -h 127.0.0.1 enron -p
+
+CREATE TABLE enron_messages AS 
+select m.smtpid as message_id, m.messagedt as date, s.email as from_address, s.name as from_name, m.subject as subject, b.body as body from messages m join people s on m.senderid=s.personid join bodies b on m.messageid=b.messageid;
+# Sqoop requires PK
+ALTER TABLE enron_messages ADD PRIMARY KEY (message_id);
+
+# import this data into HDFS using Sqoop
+
+# hadoop fs -rmr /user/hadoop/enron_messages
+
+# note, use private DNS IP (see aws EC2 console)
+
+sqoop import --connect jdbc:mysql://ip-10-239-6-83.ec2.internal:3306/enron --username enron --table enron_messages --direct --password "enr0n" --input-fields-terminated-by='\t'
+
+# create Hive table
+
+hive
+
+create external table enron_messages (
+  message_id string,
+  date timestamp,
+  from_address string,
+  from_name string,
+  subject string,
+  body string
+)
+location '/user/hadoop/enron_messages';
+
+select * from enron_messages limit 3;
+
+
+
