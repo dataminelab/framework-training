@@ -1,0 +1,29 @@
+wget http://apache.mirrors.timporter.net/kafka/0.8.1.1/kafka_2.9.2-0.8.1.1.tgz
+tar xvzf kafka_2.9.2-0.8.1.1.tgz
+cd kafka_2.9.2-0.8.1.1
+
+# installation of sbt/scala might be necessary
+wget https://dl.bintray.com/sbt/rpm/sbt-0.13.6.rpm
+sudo rpm -i sbt-0.13.6.rpm
+
+sbt update
+#sbt package
+#sbt sbt-dependency
+
+# start ZK
+bin/zookeeper-server-start.sh config/zookeeper.properties &
+
+# start kafka 
+bin/kafka-server-start.sh config/server.properties &
+
+# create new test topic
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+
+# create a data producer
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+# in a separate console open data consumer
+bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+
+# see more at: http://kafka.apache.org/
+
