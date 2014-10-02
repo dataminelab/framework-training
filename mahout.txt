@@ -55,3 +55,6 @@ python ../framework-training/mahout_show_recommendations.py 4 u.data u.item outp
 
 References:
 http://chimpler.wordpress.com/2013/02/20/playing-with-the-mahout-recommendation-engine-on-a-hadoop-cluster/
+
+http://dataminelab.com/blog/behavioural-targeting-online/
+
