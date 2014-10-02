@@ -4,6 +4,8 @@
 
 wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
 tar xzvf apache-maven-3.1.1-bin.tar.gz
+sudo mv ./apache-maven-3.1.1 /usr/lib/maven
+export PATH=$PATH:/usr/lib/maven/bin
 
 == mahout ===
 
@@ -15,7 +17,7 @@ tar xzvf mahout-distribution-0.7-src.tar.gz
 cd ./mahout-distribution-0.7
 
 # build
-~/apache-maven-3.1.1/bin/mvn package -DskipTests
+mvn package -DskipTests
 
 cd ..
 

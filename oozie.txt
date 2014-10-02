@@ -1,0 +1,32 @@
+# Oozie
+# On hortonworks sandbox
+
+git clone https://github.com/jrkinley/oozie-examples
+
+# see maven.txt on how to install mvn
+cd oozie-examples
+mvn package -DskipTests
+
+# deploy
+
+cd target
+tar -xvzf oozie-examples-0.0.1-SNAPSHOT-bundle.tar.gz
+
+#edit
+oozie-examples/job.properties
+# replace {name.node} with hdfs://10.0.2.15:8020
+# replace ${hadoop.job.tracker} with 10.0.2.15:8021
+
+# where 10.0.2.15:8020 is your sandbox IP, check with ifconfig
+
+hadoop fs -rmr /workflows/oozie-examples
+hadoop fs -mkdir /workflows
+hadoop fs -put oozie-examples /workflows/oozie-examples
+
+
+# run
+sudo su oozie
+export OOZIE_URL=http://localhost:11000/oozie
+oozie job -config oozie-examples/job.properties -run
+
+# see: https://github.com/jrkinley/oozie-examples/tree/master/src/main/workflow
