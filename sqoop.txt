@@ -54,7 +54,7 @@ ALTER TABLE enron_messages ADD PRIMARY KEY (message_id);
 
 # note, use private DNS IP (see aws EC2 console)
 
-sqoop import --connect jdbc:mysql://ip-10-239-6-83.ec2.internal:3306/enron --username enron --table enron_messages --direct --password "enr0n" --input-fields-terminated-by='\t'
+sqoop import --connect jdbc:mysql://ip-10-239-6-83.ec2.internal:3306/enron --username enron --table enron_messages --direct --password "enr0n" --fields-terminated-by='\t'
 
 # create Hive table
 
@@ -68,9 +68,12 @@ create external table enron_messages (
   subject string,
   body string
 )
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 location '/user/hadoop/enron_messages';
 
-select * from enron_messages limit 3;
+select * from enron_messages limit 5;
+
+select * from enron_messages where body like "%keyword%" limit 10;
 
 
 
