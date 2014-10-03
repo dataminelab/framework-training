@@ -3,7 +3,7 @@
 
 git clone https://github.com/jrkinley/oozie-examples
 
-# see maven.txt on how to install mvn
+# see mahout.txt on how to install mvn
 cd oozie-examples
 mvn package -DskipTests
 
