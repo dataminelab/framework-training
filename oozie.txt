@@ -27,6 +27,9 @@ hadoop fs -put oozie-examples /workflows/oozie-examples
 # run
 sudo su oozie
 export OOZIE_URL=http://localhost:11000/oozie
-oozie job -config oozie-examples/job.properties -run
+oozie job -config oozie-examples/job.properties -D jump.to=parallel -run
 
 # see: https://github.com/jrkinley/oozie-examples/tree/master/src/main/workflow
+
+# see more details on action nodes:
+https://oozie.apache.org/docs/3.2.0-incubating/WorkflowFunctionalSpec.html

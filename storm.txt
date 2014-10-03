@@ -9,9 +9,10 @@ export PATH=$PATH:~/storm-0.8.2/bin
 
 == Leiningen (Clojure build system) == 
 
-cd ~/bin
-# export PATH=$PATH:~/bin
-wget https://raw.github.com/technomancy/leiningen/stable/bin/lein
+mkdir ./bin
+cd ./bin
+export PATH=$PATH:~/bin
+wget https://raw.github.com/technomancy/leiningen/stable/bin/lein --no-check-certificate
 chmod +x ~/bin/lein
 
 == Storm started ==
@@ -26,6 +27,14 @@ lein compile
 
 # Run a sample topology
 lein run -m storm.starter.clj.word-count
+
+# Source code:
+https://github.com/nathanmarz/storm-starter/blob/master/src/clj/storm/starter/clj/word_count.clj
+
+
+# Trident
+https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/trident/TridentWordCount.java
+
 
 # See: https://github.com/nathanmarz/storm/wiki/Clojure-DSL
 

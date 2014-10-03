@@ -73,7 +73,36 @@ location '/user/hadoop/enron_messages';
 
 select * from enron_messages limit 5;
 
-select * from enron_messages where body like "%keyword%" limit 10;
+select * from enron_messages where body like "%keywoard%" limit 10;
+
+
+### Avro
+
+CREATE EXTERNAL TABLE avro_enron_messages
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
+WITH SERDEPROPERTIES (
+    'avro.schema.literal' = '{
+        "type": "record",
+        "name": "EnronMessages",
+        "namespace": "com.example.avro",
+        "fields": [
+            { "name":"message_id",  "type":["null","string"]},
+            { "name":"date",     "type":["null","string"]},
+            { "name":"from_address", "type":["null","string"]},
+            { "name":"from_name", "type":["null","string"]},
+            { "name":"subject", "type":["null","string"]},
+            { "name":"body", "type":["null","string"]}
+        ]
+    }'
+)
+STORED AS
+INPUTFORMAT  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat'
+OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat'
+LOCATION '/user/hadoop/avro/enron_messages';
+
+insert overwrite table avro_enron_messages select * from enron_messages;
+
+
 
 
 
