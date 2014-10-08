@@ -1,13 +1,6 @@
 
 == Installation == 
 
-1. Setup Cassandra folders - in PROD you might want to modify the permissions
-sudo mkdir -p /var/lib/cassandra
-sudo chmod a+w /var/lib/cassandra
-sudo mkdir -p /var/log/cassandra
-sudo chmod a+w /var/log/cassandra
-
-2. Install - in PROD you might want to configure real cluster (review and modify install script when necessary)
 cd ./framework-training/cassandra/
 ./cassandra.sh
 
