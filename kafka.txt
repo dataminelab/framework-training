@@ -6,6 +6,9 @@ cd kafka_2.9.2-0.8.1.1
 wget https://dl.bintray.com/sbt/rpm/sbt-0.13.6.rpm
 sudo rpm -i sbt-0.13.6.rpm
 
+# alternatively look at manual installation
+http://www.scala-sbt.org/0.13/tutorial/Manual-Installation.html
+
 sbt update
 #sbt package
 #sbt sbt-dependency
