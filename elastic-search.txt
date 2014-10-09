@@ -156,3 +156,9 @@ POST darwin-origin/chapter/_search?pretty=true
     "fields": {"text": {"number_of_fragments": 3}}
   }
 }
+
+# See head plugin
+./bin/plugin -install mobz/elasticsearch-head
+# open: http://localhost:9200/_plugin/head/
+
+# http://mobz.github.io/elasticsearch-head/
