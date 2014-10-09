@@ -5,6 +5,11 @@ cd  elasticsearch-1.3.4
 # install UI marvel plugin
 ./bin/plugin -i elasticsearch/marvel/latest
 
+# to avoid problems change cluster name
+cluster:
+  name: <NAME OF YOUR CLUSTER>
+# see: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-configuration.html
+
 # run as a daemon
 ./bin/elasticsearch -d
 
