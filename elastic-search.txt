@@ -168,3 +168,10 @@ POST darwin-origin/chapter/_search?pretty=true
 # open: http://localhost:9200/_plugin/head/
 
 # http://mobz.github.io/elasticsearch-head/
+
+
+Advanced:
+* Architecture
+* Cluster setup
+* Backups: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/modules-snapshots.html
+
