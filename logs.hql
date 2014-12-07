@@ -16,12 +16,12 @@ WITH SERDEPROPERTIES (
 \"]*|\"[^\"]*\"))?",
   "output.format.string" = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s %9$s"
 );
-LOAD DATA LOCAL INPATH '/root/framework-training/data/access_log_0' OVERWRITE INTO TABLE logs;
+LOAD DATA LOCAL INPATH '/home/hadoop/framework-training/data/access_log_0' OVERWRITE INTO TABLE logs;
 
 
 -- Or using AWS
 
--- add jar /home/hadoop/hive/lib/hive_contrib.jar;
+-- add jar /home/hadoop/.versions/hive-0.11.0/lib/hive_contrib.jar;
 
 CREATE TABLE logs (
   host STRING,
