@@ -1,3 +1,5 @@
+lein repl
+
 (def drpc (backtype.storm.LocalDRPC.))
 (def cluster (backtype.storm.LocalCluster.))
 (def builder (storm.starter.ReachTopology/construct))
