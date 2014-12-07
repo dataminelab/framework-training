@@ -4,5 +4,5 @@
 (.submitTopology cluster "reach" {} (.createLocalTopology builder drpc))
 
 (.execute drpc "reach" "engineering.twitter.com/blog/5")
-(.execute drpc "reach" "")
-(.execute drpc "reach" "")
+(.execute drpc "reach" "tech.backtype.com/blog/123")
+(.execute drpc "reach" "not-a-url.com")
