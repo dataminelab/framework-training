@@ -4,6 +4,8 @@ https://github.com/dataminelab/framework-training/
 
 -- based on Amazon tutorial: http://aws.amazon.com/articles/Elastic-MapReduce/5249664154115844
 
+-- input has around ~ 2.2 TB
+
 set hive.base.inputformat=org.apache.hadoop.hive.ql.io.HiveInputFormat;
 set mapred.min.split.size=134217728;
 

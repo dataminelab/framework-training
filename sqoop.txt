@@ -36,6 +36,7 @@ grant all on enron.* to 'enron'@'%' identified by 'enr0n';
 grant all on enron.* to 'enron'@localhost identified by 'enr0n';
 
 # just for this experiment (not recommended overall)
+# this is required so the sqoop can connect to mysql
 sudo vi /etc/mysql/my.cnf
 bind-address = 0.0.0.0
 sudo /etc/init.d/mysql restart
