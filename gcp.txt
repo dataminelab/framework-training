@@ -1,0 +1,50 @@
+To estimate the price:
+https://cloud.google.com/products/calculator/
+
+# Useful Google Chrome plugin (shows estimate price of a query)
+https://chrome.google.com/webstore/detail/streak-bigquery-developer/lfmljmpmipdibdhbmmaadmhpaldcihgd
+
+# Google Cloud Platform
+
+https://console.developers.google.com/project
+
+
+# Big Query
+
+
+Sample SQL queries:
+
+SELECT year, month, avg(mean_temp) avg_temp, 
+min(min_temperature) min_temp,
+max(max_temperature) max_temp
+FROM [publicdata:samples.gsod] 
+GROUP BY year, month
+LIMIT 1000;
+
+
+# create new table from results of out query and query it
+
+== API:
+https://cloud.google.com/bigquery/bq-command-line-tool?hl=bg#browsing
+
+== Install bq command line
+https://cloud.google.com/sdk/?hl=bg
+
+# authenticate
+gcloud auth login
+
+# set project name (where myproject is project id)
+gcloud config set project myproject
+
+# listing tables
+bq ls publicdata:samples
+
+# show table structure
+bq show publicdata:samples.wikipedia
+
+# run query from command line
+bq query "SELECT title, comment, num_characters FROM [publicdata:samples.wikipedia]
+WHERE 
+  REGEXP_MATCH(title, r'Hadoop')
+  AND NOT title CONTAINS(':')
+LIMIT 100;"
