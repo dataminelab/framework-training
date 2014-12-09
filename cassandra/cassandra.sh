@@ -35,3 +35,9 @@ sed -e "s@CASSANDRA_PID_DIR@$CASSANDRA_PID_DIR@" \
         < ./stop.sh > ./target/cassandra/bin/stop.sh
 chmod +x ./target/cassandra/bin/stop.sh
 
+sudo mkdir -p /var/log/cassandra/
+sudo chmod a+w /var/log/cassandra/
+
+sudo mkdir -p /var/lib/cassandra
+sudo chmod a+xw /var/lib/cassandra
+
