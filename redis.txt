@@ -7,10 +7,7 @@ cd redis-stable
 make
 sudo make install
 
-screen -S redis
-redis-server
-Ctrl+A Ctrl+D
-# or simply
+# run
 redis-server &
 
 redis-cli

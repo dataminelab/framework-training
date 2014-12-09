@@ -41,3 +41,68 @@ https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/tr
 # For an implementation of Storm Protocol see: https://github.com/rathko/storm/blob/master/src/multilang/R/storm.R
 
 
+# Storm - cluster mode
+
+# install lein - see above
+
+# download storm-deploy
+
+git clone https://github.com/nathanmarz/storm-deploy.git
+
+lein deps
+
+# Create a ~/.pallet/config.clj
+
+(defpallet
+  :services
+  {
+   :default {
+             :blobstore-provider "aws-s3"
+             :provider "aws-ec2"
+             :environment {:user {:username "storm"  ; this must be "storm"
+                                  :private-key-path "$YOUR_PRIVATE_KEY_PATH$"
+                                  :public-key-path "$YOUR_PUBLIC_KEY_PATH$"}
+                           :aws-user-id "$YOUR_USER_ID$"}
+             :identity "$YOUR_AWS_ACCESS_KEY$"
+             :credential "$YOUR_AWS_ACCESS_KEY_SECRET$"
+             :jclouds.regions "$YOUR_AWS_REGION$"
+             }
+    })
+
+# fill in your details and follow instructions
+# see more at: https://github.com/nathanmarz/storm-deploy/wiki
+
+
+# Alternatively - set up the cluster manually
+# see https://storm.apache.org/documentation/Setting-up-a-Storm-cluster.html
+
+wget http://mirror.gopotato.co.uk/apache/storm/apache-storm-0.9.3/apache-storm-0.9.3.tar.gz
+tar xzvf apache-storm-0.9.3.tar.gz
+
+sudo mkdir /var/storm
+sudo chmod a+w /var/storm
+
+# edit - on nimbus
+vi ./apache-storm-0.9.3/conf/storm.yaml
+
+# use private DNS, for example:
+storm.zookeeper.servers:
+     - "ip-10-165-69-243.ec2.internal"
+nimbus.host: "ip-10-165-69-243.ec2.internal"
+drpc.servers:
+     - "ip-10-165-69-243.ec2.internal"
+storm.local.dir: "/var/storm"
+# might be useful on workers
+worker.childopts: -Xmx2048m
+
+# start nimbus (on master)
+INSTALL_DIR=/home/hadoop/apache-storm-0.9.3
+python $INSTALL_DIR/bin/storm nimbus &
+
+# start workers (on slaves)
+
+
+
+
+
+
