@@ -3,8 +3,10 @@ tar xvzf kafka_2.9.2-0.8.1.1.tgz
 cd kafka_2.9.2-0.8.1.1
 
 # installation of sbt/scala might be necessary
-wget https://dl.bintray.com/sbt/rpm/sbt-0.13.6.rpm
-sudo rpm -i sbt-0.13.6.rpm
+wget http://apt.typesafe.com/repo-deb-build-0002.deb
+sudo dpkg -i repo-deb-build-0002.deb
+sudo apt-get update
+sudo apt-get install sbt
 
 # alternatively look at manual installation
 http://www.scala-sbt.org/0.13/tutorial/Manual-Installation.html
