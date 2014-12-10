@@ -1,0 +1,29 @@
+
+http://zookeeper.apache.org/releases.html
+http://zookeeper.apache.org/doc/r3.2.2/zookeeperStarted.html
+
+
+wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+tar xzvf ./zookeeper-3.4.6.tar.gz
+
+sudo mkdir /var/zookeeper
+sudo chmod a+w /var/zookeeper
+
+cd ./zookeeper-3.4.6
+cp ./conf/zoo_sample.cfg ./conf/zoo.cfg
+
+./zoo.cfg
+
+# update:
+tickTime=2000
+dataDir=/var/zookeeper
+clientPort=2181
+
+# to start the zookeeper
+sudo bin/zkServer.sh start
+
+# see the zookeeper folder for supervision scripts
+
+# zk client
+./bin/zkCli.sh
+
