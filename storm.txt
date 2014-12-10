@@ -19,7 +19,7 @@ chmod +x ~/bin/lein
 
 cd 
 git clone https://github.com/nathanmarz/storm-starter
-cd ~/storm-starter
+cd ./storm-starter
 
 # Build
 lein deps
@@ -32,7 +32,30 @@ lein run -m storm.starter.clj.word-count
 https://github.com/nathanmarz/storm-starter/blob/master/src/clj/storm/starter/clj/word_count.clj
 
 
+# Install maven 3
+wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
+tar xzvf apache-maven-3.1.1-bin.tar.gz
+sudo mv ./apache-maven-3.1.1 /usr/lib/maven
+export PATH=/usr/lib/maven/bin:$PATH
+
+# Install storm
+cd
+git clone https://github.com/apache/storm.git
+cd ./storm
+mvn clean install -DskipTests=true
+
+cd ./examples/storm-starter/
+
+# Java version - notice python bolt
+mvn compile exec:java -Dstorm.topology=storm.starter.WordCountTopology
+
+# Sample DRPC
+mvn compile exec:java -Dstorm.topology=storm.starter.BasicDRPCTopology
+
 # Trident
+mvn compile exec:java -Dstorm.topology=storm.starter.trident.TridentWordCount.java
+
+# Source code
 https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/trident/TridentWordCount.java
 
 
@@ -41,41 +64,10 @@ https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/tr
 # For an implementation of Storm Protocol see: https://github.com/rathko/storm/blob/master/src/multilang/R/storm.R
 
 
-# Storm - cluster mode
-
-# install lein - see above
-
-# download storm-deploy
-
-git clone https://github.com/nathanmarz/storm-deploy.git
-
-lein deps
-
-# Create a ~/.pallet/config.clj
-
-(defpallet
-  :services
-  {
-   :default {
-             :blobstore-provider "aws-s3"
-             :provider "aws-ec2"
-             :environment {:user {:username "storm"  ; this must be "storm"
-                                  :private-key-path "$YOUR_PRIVATE_KEY_PATH$"
-                                  :public-key-path "$YOUR_PUBLIC_KEY_PATH$"}
-                           :aws-user-id "$YOUR_USER_ID$"}
-             :identity "$YOUR_AWS_ACCESS_KEY$"
-             :credential "$YOUR_AWS_ACCESS_KEY_SECRET$"
-             :jclouds.regions "$YOUR_AWS_REGION$"
-             }
-    })
-
-# fill in your details and follow instructions
-# see more at: https://github.com/nathanmarz/storm-deploy/wiki
-
-
 # Alternatively - set up the cluster manually
 # see https://storm.apache.org/documentation/Setting-up-a-Storm-cluster.html
 
+cd
 wget http://mirror.gopotato.co.uk/apache/storm/apache-storm-0.9.3/apache-storm-0.9.3.tar.gz
 tar xzvf apache-storm-0.9.3.tar.gz
 
@@ -98,8 +90,17 @@ worker.childopts: -Xmx2048m
 # start nimbus (on master)
 INSTALL_DIR=/home/hadoop/apache-storm-0.9.3
 python $INSTALL_DIR/bin/storm nimbus &
+python $INSTALL_DIR/bin/storm ui &
 
 # start workers (on slaves)
+$INSTALL_DIR/bin/storm supervisor &
+
+# check UI status
+http://ec2-54-145-158-233.compute-1.amazonaws.com:8080/index.html
+
+# deploy new topology
+
+
 
 
 
