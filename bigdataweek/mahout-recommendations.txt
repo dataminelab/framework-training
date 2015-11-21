@@ -23,7 +23,7 @@ hadoop fs -getmerge recommendations/part* output.txt
 
 # Read recommended movies
 
-python /home/hadoop/framework-training/show_recommendations.py 4 ratings.dat movies.dat output.txt
+python ../framework-training/bigdataweek/show_recommendations.py 4 ml-1m/ratings.dat ml-1m/movies.dat output.txt
 
 # Build the service
 
