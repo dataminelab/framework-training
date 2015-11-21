@@ -1,0 +1,144 @@
+
+
+AWS
+
+#### Hive advertising analysis
+
+AWS: https://aws.amazon.com/articles/2855
+
+# Create S3 bucket
+
+hive \
+    -d SAMPLE=s3://elasticmapreduce/samples/hive-ads \
+    -d DAY=2009-04-13 -d HOUR=08 \
+    -d NEXT_DAY=2009-04-13 -d NEXT_HOUR=09 \
+    -d OUTPUT=s3://ft-samplebucket/samples/output
+
+ADD JAR ${SAMPLE}/libs/jsonserde.jar ;
+
+CREATE EXTERNAL TABLE impressions (
+    requestBeginTime string, adId string, impressionId string, referrer string, 
+    userAgent string, userCookie string, ip string
+  )
+  PARTITIONED BY (dt string)
+  ROW FORMAT 
+    serde 'com.amazon.elasticmapreduce.JsonSerde'
+    with serdeproperties ( 'paths'='requestBeginTime, adId, impressionId, referrer, userAgent, userCookie, ip' )
+  LOCATION '${SAMPLE}/tables/impressions' ;
+
+MSCK REPAIR TABLE impressions;
+
+CREATE EXTERNAL TABLE clicks (
+    impressionId string
+  )
+  PARTITIONED BY (dt string)
+  ROW FORMAT 
+    SERDE 'com.amazon.elasticmapreduce.JsonSerde'
+    WITH SERDEPROPERTIES ( 'paths'='impressionId' )
+  LOCATION '${SAMPLE}/tables/clicks' ;
+  
+MSCK REPAIR TABLE clicks;
+
+
+CREATE TABLE tmp_impressions (
+    requestBeginTime string, adId string, impressionId string, referrer string, 
+    userAgent string, userCookie string, ip string
+  )
+  STORED AS SEQUENCEFILE;
+
+INSERT OVERWRITE TABLE tmp_impressions 
+    SELECT 
+      from_unixtime(cast((cast(i.requestBeginTime as bigint) / 1000) as int)) requestBeginTime, 
+      i.adId, i.impressionId, i.referrer, i.userAgent, i.userCookie, i.ip
+    FROM 
+      impressions i
+    WHERE 
+      i.dt >= '${DAY}-${HOUR}-00' and i.dt < '${NEXT_DAY}-${NEXT_HOUR}-00'
+  ;
+
+
+CREATE TABLE tmp_clicks (
+    impressionId string
+  ) STORED AS SEQUENCEFILE;
+
+INSERT OVERWRITE TABLE tmp_clicks 
+    SELECT 
+      impressionId
+    FROM 
+      clicks c  
+    WHERE 
+      c.dt >= '${DAY}-${HOUR}-00' AND c.dt < '${NEXT_DAY}-${NEXT_HOUR}-20'
+  ;
+
+CREATE EXTERNAL TABLE joined_impressions (
+    request_begin_time string, ad_id string, impression_id string, 
+  page string, user_agent string, user_cookie string, ip_address string,
+  clicked boolean 
+    )
+    PARTITIONED BY (day string, hour string)
+    STORED AS SEQUENCEFILE
+    LOCATION '${OUTPUT}/joined_impressions'
+;
+
+INSERT OVERWRITE TABLE joined_impressions PARTITION (day='${DAY}', hour='${HOUR}')
+  SELECT 
+    i.requestBeginTime, i.adId, i.impressionId, i.referrer, i.userAgent, i.userCookie, 
+    i.ip, (c.impressionId is not null) clicked
+  FROM 
+    tmp_impressions i LEFT OUTER JOIN tmp_clicks c ON i.impressionId = c.impressionId
+  ;
+
+
+## Contextual advertising
+
+CREATE TABLE feature_index (
+    feature STRING,
+    ad_id STRING,
+    clicked_percent DOUBLE )
+STORED AS SEQUENCEFILE;
+
+INSERT OVERWRITE TABLE feature_index
+    SELECT
+      temp.feature,
+      temp.ad_id,
+      sum(if(temp.clicked, 1, 0)) / cast(count(1) as DOUBLE) as clicked_percent
+    FROM (
+      SELECT concat('ua:', trim(lower(ua.feature))) as feature, ua.ad_id, ua.clicked
+      FROM (
+        MAP joined_impressions.user_agent, joined_impressions.ad_id, joined_impressions.clicked
+        USING '${SAMPLE}/libs/split_user_agent.py' as (feature STRING, ad_id STRING, clicked BOOLEAN)
+      FROM joined_impressions
+    ) ua
+    
+    UNION ALL
+    
+    SELECT concat('ip:', regexp_extract(ip_address, '^([0-9]{1,3}\.[0-9]{1,3}).*', 1)) as feature, ad_id, clicked
+    FROM joined_impressions
+    
+    UNION ALL
+    
+    SELECT concat('page:', lower(page)) as feature, ad_id, clicked
+    FROM joined_impressions
+  ) temp
+  GROUP BY temp.feature, temp.ad_id;
+
+# See: https://s3.amazonaws.com/elasticmapreduce/samples/hive-ads/libs/split_user_agent.py
+
+SELECT 
+    ad_id, -sum(log(if(0.0001 > clicked_percent, 0.0001, clicked_percent))) AS value
+  FROM 
+    feature_index
+  WHERE 
+    feature = 'ua:safari' OR feature = 'ua:chrome'
+  GROUP BY 
+    ad_id
+  ORDER BY 
+    value ASC
+  LIMIT 100
+  ;
+
+
+
+
+
+
