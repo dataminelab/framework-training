@@ -1,0 +1,32 @@
+
+# Install maven
+wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
+tar xzvf apache-maven-3.1.1-bin.tar.gz
+sudo mv ./apache-maven-3.1.1 /usr/lib/maven
+export PATH=/usr/lib/maven/bin:$PATH
+
+# Install lein
+wget https://raw.github.com/technomancy/leiningen/stable/bin/lein --no-check-certificate
+chmod +x ~/bin/lein
+
+# Install Storm
+wget http://apache.mirror.anlx.net/storm/apache-storm-0.9.6/apache-storm-0.9.6.tar.gz
+tar xzvf ./apache-storm-0.9.6.tar.gz.1
+
+cd
+cd apache-storm-0.9.6
+cd examples/storm-starter/
+lein deps
+lein compile
+
+# Compile sample topology
+cd examples/storm-starter/
+mvn compile exec:java -Dstorm.topology=storm.starter.WordCountTopology
+
+# Compile and run trident topology
+mvn compile exec:java -Dstorm.topology=storm.starter.trident.TridentWordCount
+
+# See source code - compare
+https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/WordCountTopology.java
+https://github.com/nathanmarz/storm-starter/blob/master/src/jvm/storm/starter/trident/TridentWordCount.java
+
