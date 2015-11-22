@@ -1,0 +1,71 @@
+
+### Tableau
+
+# We will be analyzing: http://www.gdeltproject.org/
+# Global Database of Events, Language, and Tone
+
+# See: http://www.gdeltproject.org/data.html
+
+gdelt-b +
+
+# Event trends
+
+Year -> num of record, sum num of articles
+Create custom field
+
+DATE(str([Year])+"-"+RIGHT(str([Month Year]),2)+"-01")
+
+Color by: event root code
+
+Import Excel with root codes
+
+
+# Create new sheet (Event Map)
+
+Actor1CountryCode
+
+number of records -> size
+
+Goldstein scale - sentiment analysis - as AVG
+
+date in pages and page through years
+
+
+
+# Create dashboard (Event dashboard)
+
+Create new dashboard & drag&grop
+File -> Page setup -> Dashboard size = automatic
+
+Select top as -> use as filter
+
+# Create new sheet - Event timeline
+
+Acto1Country as rows - quickfilter - select EGY, LBY, TUN, YEM
+
+Add Date as columns, select MONTH and do discrete
+
+Add num of articles
+
+Move country codes as first in rows
+
+Around 2011 things started getting interesting
+
+Color by Goldtein scale
+
+# Create new story - Arab Spring
+
+Arab Spring Unfolds
+
+Focus on Tunisia only
+
+Page setup -> automatic
+
+
+# see: http://www.tableau.com/solutions/google-bigquery#
+
+# to see all event codes: view-source:http://analysis.gdeltproject.org/module-event-exporter.html
+
+
+
+
