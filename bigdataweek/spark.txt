@@ -1,0 +1,157 @@
+
+spark-shell
+
+#### Quick spark tutorial
+
+# Download sample text
+
+wget https://github.com/rutum/tf-idf/raw/master/gutenberg/shakespeare-macbeth.txt
+hadoop fs -put shakespeare-macbeth.txt /macbeth.txt
+
+
+val textFile = sc.textFile("macbeth.txt")
+
+textFile.count()
+
+textFile.first() 
+
+# How many lines contain spark?
+
+textFile.filter(line => line.contains("Spark")).count()
+
+# Using Java
+
+import java.lang.Math
+textFile.map(line => line.split(" ").size).reduce((a, b) => Math.max(a, b))
+
+# Word-count in Spark
+# A one liner!
+val wordCounts = textFile.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey((a, b) => a + b)
+wordCounts.collect()
+
+
+# Caching
+
+val linesWithSpark = textFile.filter(line => line.contains("Spark"))
+
+linesWithSpark.cache()
+linesWithSpark.collect()
+
+## Sample app
+
+/* SimpleApp.scala */
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.SparkConf
+
+object SimpleApp {
+  def main(args: Array[String]) {
+    val logFile = "YOUR_SPARK_HOME/README.md" // Should be some file on your system
+    val conf = new SparkConf().setAppName("Simple Application")
+    val sc = new SparkContext(conf)
+    val logData = sc.textFile(logFile, 2).cache()
+    val numAs = logData.filter(line => line.contains("a")).count()
+    val numBs = logData.filter(line => line.contains("b")).count()
+    println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
+  }
+}
+
+
+spark-submit \
+  --class "SimpleApp" \
+  --master local[4] \
+  target/scala-2.10/simple-project_2.10-1.0.jar
+
+###
+
+Or to run existing examples
+
+/usr/lib/spark/bin/run-example SparkPi
+
+# Source: https://github.com/apache/spark/blob/5d7fe178b303918faa0893cd36963158b420309f/examples/src/main/scala/org/apache/spark/examples/SparkPi.scala
+
+# Spark SQL
+
+# The Department of Transportation public data set with flight information since 1987
+# See: https://aws.amazon.com/blogs/aws/new-apache-spark-on-amazon-emr/
+
+var hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+val parquetFile = hiveContext.parquetFile("s3://us-east-1.elasticmapreduce.samples/flightdata/input/")
+
+# Where parquetFile - efficient Columnar store for BigData
+
+//Parquet files can also be registered as tables and then used in SQL statements. 
+parquetFile.registerTempTable("flights")
+
+//Top 10 airports with the most departures since 2000
+val topDepartures = hiveContext.sql("SELECT origin, count(*) AS total_departures FROM flights WHERE year >= '2000' GROUP BY origin ORDER BY total_departures DESC LIMIT 10")
+topDepartures.rdd.saveAsTextFile(s"$OutputLocation/top_departures")
+
+topDepartures.take(10).foreach(println)
+
+
+# See: http://spark.apache.org/docs/latest/quick-start.html
+
+###  Streaming
+
+# netcat
+nc -lk 9999
+
+/usr/lib/spark/bin/run-example streaming.NetworkWordCount localhost 9999
+
+###
+
+Install sbt
+
+curl https://bintray.com/sbt/rpm/rpm | sudo tee /etc/yum.repos.d/bintray-sbt-rpm.repo
+sudo yum install sbt
+
+###
+
+# Twitter Streaming with Spark
+# See: https://github.com/databricks/reference-apps/blob/master/twitter_classifier/collect.md
+# Source code: https://github.com/databricks/reference-apps/blob/master/twitter_classifier/scala/src/main/scala/com/databricks/apps/twitter_classifier/Collect.scala
+
+# First make sure you've created the API key
+
+https://apps.twitter.com/
+
+# Download a sample application
+
+git clone https://github.com/databricks/reference-apps.git
+cd reference-apps/twitter_classifier/scala
+
+sbt package
+
+export YOUR_TWITTER_CONSUMER_KEY=xyz
+export YOUR_TWITTER_CONSUMER_SECRET=xyz
+export YOUR_TWITTER_ACCESS_TOKEN=xyz
+export YOUR_TWITTER_ACCESS_SECRET=xyz
+
+
+# submit the same job to the cluster
+# export YOUR_SPARK_MASTER=yarn://ec2-50-19-40-38.compute-1.amazonaws.com:7077
+
+spark-submit \
+     --class "com.databricks.apps.twitter_classifier.Collect" \
+     --master ${YOUR_SPARK_MASTER:-local[4]} \
+     --packages "org.apache.spark:spark-streaming-twitter_2.10:1.5.1" \
+     ./target/scala-2.10/spark-twitter-lang-classifier_2.10-1.0.jar \
+     ${YOUR_OUTPUT_DIR:-/tmp/tweets} \
+     ${NUM_TWEETS_TO_COLLECT:-10000} \
+     ${OUTPUT_FILE_INTERVAL_IN_SECS:-10} \
+     ${OUTPUT_FILE_PARTITIONS_EACH_INTERVAL:-1} \
+     --consumerKey ${YOUR_TWITTER_CONSUMER_KEY} \
+     --consumerSecret ${YOUR_TWITTER_CONSUMER_SECRET} \
+     --accessToken ${YOUR_TWITTER_ACCESS_TOKEN}  \
+     --accessTokenSecret ${YOUR_TWITTER_ACCESS_SECRET}
+
+
+# tweets are downloaded to
+hadoop fs -ls /tmp/tweets/
+
+
+hadoop fs -getmerge /tmp/tweets/tweets* tweets.txt
+
+
