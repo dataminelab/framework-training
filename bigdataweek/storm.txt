@@ -7,7 +7,7 @@ export PATH=/usr/lib/maven/bin:$PATH
 
 # Install Storm
 wget http://apache.mirror.anlx.net/storm/apache-storm-0.9.6/apache-storm-0.9.6.tar.gz
-tar xzvf ./apache-storm-0.9.6.tar.gz.1
+tar xzvf ./apache-storm-0.9.6.tar.gz
 
 # Compile sample topology
 cd examples/storm-starter/
