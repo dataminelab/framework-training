@@ -8,9 +8,9 @@ cd target
 rm -fR ./cassandra
 
 # download cassandra
-version="apache-cassandra-2.0.0"
+version="apache-cassandra-2.1.11"
 file=${version}-bin.tar.gz
-wget -c http://archive.apache.org/dist/cassandra/2.0.0/${file}
+wget -c http://apache.mirror.anlx.net/cassandra/2.1.11/${file}
 
 # extract
 tar xzf ./${file}

@@ -6,8 +6,9 @@ sudo mv ./apache-maven-3.1.1 /usr/lib/maven
 export PATH=/usr/lib/maven/bin:$PATH
 
 # Install lein
-wget https://raw.github.com/technomancy/leiningen/stable/bin/lein --no-check-certificate
-chmod +x ~/bin/lein
+#wget https://raw.github.com/technomancy/leiningen/stable/bin/lein --no-check-certificate
+#chmod +x lein
+#sudo cp lein /usr/bin/lein
 
 # Install Storm
 wget http://apache.mirror.anlx.net/storm/apache-storm-0.9.6/apache-storm-0.9.6.tar.gz
@@ -16,8 +17,8 @@ tar xzvf ./apache-storm-0.9.6.tar.gz.1
 cd
 cd apache-storm-0.9.6
 cd examples/storm-starter/
-lein deps
-lein compile
+#lein deps
+#lein compile
 
 # Compile sample topology
 cd examples/storm-starter/
