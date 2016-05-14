@@ -137,4 +137,10 @@ define('DB_DATABASE', 'sample');
     sudo yum install mysql
     mysql -u tutorial_user -p --host endpoint sample
 
+  Assign Elastic IP
+
+    https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Addresses:sort=publicIp
+
+    
+
 
