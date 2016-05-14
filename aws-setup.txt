@@ -1,4 +1,3 @@
-sudo apt-get install git
 sudo yum install git
 git clone https://github.com/dataminelab/framework-training.git
 
@@ -7,6 +6,7 @@ cd framework-training/
 # Poor man Hadoop
 cat words.txt | ./mapper.py | sort | ./reducer.py
 
+# 
 
 hdfs dfs -ls /user/root/
 hadoop dfs -copyFromLocal ./words.txt /user/root/words.txt
