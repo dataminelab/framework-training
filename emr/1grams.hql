@@ -1,8 +1,3 @@
-https://github.com/dataminelab/framework-training/
-
-1grams.hql
-
--- based on Amazon tutorial: http://aws.amazon.com/articles/Elastic-MapReduce/5249664154115844
 
 -- input has around ~ 2.2 TB
 
@@ -108,3 +103,6 @@ SORT BY
  increase DESC
 LIMIT 200;
  
+-- based on Amazon tutorial: http://aws.amazon.com/articles/Elastic-MapReduce/5249664154115844
+
+

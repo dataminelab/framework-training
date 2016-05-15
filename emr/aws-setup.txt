@@ -1,0 +1,82 @@
+sudo yum install git
+git clone https://github.com/dataminelab/framework-training.git
+
+cd framework-training/
+
+# Poor man Hadoop
+cat words.txt | ./mapper.py | sort | ./reducer.py
+
+# Create EMR cluster
+
+Create a default EMR cluster
+
+Enable WebConnection - follow directions for your OS
+
+* SSH to EMR master
+* Checkout git repo with excercises
+
+Upload example data to HDFS before running examples:
+
+upload-data-to-hdfs.sh
+
+# Run Map Reduce excercises
+
+1. Python simple word-count
+
+cat words.txt | ./mapper.py | sort | ./reducer.py
+
+
+2. Explore HDFS
+
+```
+hdfs dfs -ls /
+```
+
+See list of commands:
+http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/FileSystemShell.html
+
+Map Reduce streaming:
+
+Upload data into HDFS:
+
+```
+hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
+
+```
+
+Execute streaming MapReduce Python:
+
+```
+hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
+STREAMING_JAR=/usr/lib/hadoop-mapreduce/hadoop-streaming.jar
+hadoop jar $STREAMING_JAR -files ./mapper.py,./reducer.py -mapper ./mapper.py -reducer ./reducer.py -input /user/sample/words.txt -output /user/sample/words-output
+```
+
+Use the output URL to track the MapReduce job.
+
+2. Java word-count
+
+Review the source code and compile the Jar
+```
+mkdir java/target
+javac -cp `hadoop classpath`:. -d java/target java/src/org/apache/WordCount.java
+jar -cvf ./wordcount.jar -C java/target .
+```
+
+Submit Jar to Hadoop for execution:
+```
+hadoop jar ./wordcount.jar org.apache.WordCount /user/sample/words.txt /user/sample/words-output-2
+```
+
+# see results
+hdfs dfs -ls /user/sample/words-output-2
+
+Task:
+- download results using hdfs dfs to local machine
+- combine the files into a single output
+
+Next:
+- Have a look at Ganglia
+- Quick look at Hue
+
+
