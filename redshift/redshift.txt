@@ -1,0 +1,184 @@
+
+# Create new Redshift cluster
+dc1.large
+4 nodes
+
+# Install pgsql client
+
+sudo yum install postgresql
+
+# Connect to Redshift
+
+psql -h cluster-name.chcbiiy009es.us-east-1.redshift.amazonaws.com -U username -p 5439 -d database_name
+
+# Import tables
+See load_data.sql
+
+List created tables:
+```
+\dt
+```
+
+# Test system performance
+
+| Benchmark               | Before | After |
+|-------------------------|--------|-------|
+| Load time (five tables) |        |       |
+| Storage Use             |        |       |
+| LINEORDER               |        |       |
+| PART                    |        |       |
+| CUSTOMER                |        |       |
+| DWDATE                  |        |       |
+| SUPPLIER                |        |       |
+| Total storage           |        |       |
+| Query execution time    |        |       |
+| Query 1                 |        |       |
+| Query 2                 |        |       |
+| Query 3                 |        |       |
+| Total execution time    |        |       |
+
+See: http://www.tablesgenerator.com/markdown_tables
+
+Run following queries:
+
+Storage use:
+
+select stv_tbl_perm.name as table, count(*) as mb
+from stv_blocklist, stv_tbl_perm
+where stv_blocklist.tbl = stv_tbl_perm.id
+and stv_blocklist.slice = stv_tbl_perm.slice
+and stv_tbl_perm.name in ('lineorder','part','customer','dwdate','supplier')
+group by stv_tbl_perm.name
+order by 1 asc;
+
+# Test query performance
+
+-- Query 1
+-- Restrictions on only one dimension. 
+select sum(lo_extendedprice*lo_discount) as revenue
+from lineorder, dwdate
+where lo_orderdate = d_datekey
+and d_year = 1997 
+and lo_discount between 1 and 3 
+and lo_quantity < 24;
+
+-- Query 2
+-- Restrictions on two dimensions 
+
+select sum(lo_revenue), d_year, p_brand1
+from lineorder, dwdate, part, supplier
+where lo_orderdate = d_datekey
+and lo_partkey = p_partkey
+and lo_suppkey = s_suppkey
+and p_category = 'MFGR#12'
+and s_region = 'AMERICA'
+group by d_year, p_brand1
+order by d_year, p_brand1;
+
+-- Query 3
+-- Drill down in time to just one month 
+
+select c_city, s_city, d_year, sum(lo_revenue) as revenue 
+from customer, lineorder, supplier, dwdate
+where lo_custkey = c_custkey
+and lo_suppkey = s_suppkey
+and lo_orderdate = d_datekey
+and (c_city='UNITED KI1' or
+c_city='UNITED KI5')
+and (s_city='UNITED KI1' or
+s_city='UNITED KI5')
+and d_yearmonth = 'Dec1997'
+group by c_city, s_city, d_year
+order by d_year asc, revenue desc;
+
+# Analyse queries
+
+Observations:
+
+1. Sort keys
+
+LINEORDER frequently uses equality filters using lo_orderdate
+`where lo_orderdate = d_datekey and d_year = 1997`
+
+LINEORDER also uses lo_orderdate for range filtering
+`where lo_orderdate = d_datekey and d_year >= 1992 and d_year <= 1997 `
+
+## specify lo_orderdate as the sort key for LINEORDER
+
+We select following sort-keys:
+
+LINEORDER	lo_orderdate	 
+PART	    p_partkey	 
+CUSTOMER	c_custkey	 
+SUPPLIER	s_suppkey	 
+DWDATE	    d_datekey 
+
+2. Distribution keys
+
+* KEY - distributed by a values of a column (useful to ensure joins data end up in same slices)
+* ALL - copy of entire table on every node. Useful for small tables used often in joins
+* EVEN - default, round-robin evenly distributed across nodes, good when there is no clear cut between KEY or ALL
+
+explain
+select sum(lo_revenue), d_year, p_brand1
+from lineorder, dwdate, part, supplier
+where lo_orderdate = d_datekey
+and lo_partkey = p_partkey
+and lo_suppkey = s_suppkey
+and p_category = 'MFGR#12'
+and s_region = 'AMERICA'
+group by d_year, p_brand1
+order by d_year, p_brand1;
+
+DS_BCAST_INNER indicates that the inner join table was broadcast to every slice. A DS_DIST_BOTH label, if present, would indicate that both the outer join table and the inner join table were redistributed across the slices. 
+
+LINEORDER is the fact table, and PART is the largest dimension. PART joins LINEORDER on its primary key, p_partkey
+
+lo_partkey as the distribution key for LINEORDER and p_partkey as the distribution key for PART so that the matching values for the joining keys will be collocated on the same slices when the data is loaded
+
+CUSTOMER, SUPPLIER, and DWDATE also join the LINEORDER table on their primary keys; however, LINEORDER will be collocated with PART, so you will set the remaining tables to use DISTSTYLE ALL. Because the tables are relatively small and are not updated frequently, using ALL distribution will have minimal impact on storage and load times.
+
+Use EVEN distribution for the remaining tables
+
+| Table name | Sort Key     | Distribution Style |
+|------------|--------------|--------------------|
+| LINEORDER  | lo_orderdate | lo_partkey         |
+| PART       | p_partkey    | p_partkey          |
+| CUSTOMER   | c_custkey    | ALL                |
+| SUPPLIER   | s_suppkey    | ALL                |
+| DWDATE     | d_datekey    | ALL                |
+
+3. Review compression encodings
+
+analyze compression lineorder;
+
+Usually it is best to import large amount of data (100k+) using COPY method and note the compressions automatically selected by the COPY command.
+
+4. Reimport the data using load_optimized_data.sql
+
+Check automatically chosen compressions:
+
+select "column", type, encoding 
+from pg_table_def where tablename = 'biglist';
+
+Re-run elect queries to compare results.
+
+
+# General notes:
+
+If there are any errors during the import check errors in:
+
+select * from STL_LOAD_ERRORS order by starttime desc limit 1;
+
+Adopted from tutorial:
+http://docs.aws.amazon.com/redshift/latest/dg/tutorial-tuning-tables-distribution.html
+
+See copy parameters:
+http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-load.html#copy-noload
+
+Info on redshift manifest files: 
+http://docs.aws.amazon.com/redshift/latest/dg/loading-data-files-using-manifest.html
+
+See example on UPSERT:
+https://www.flydata.com/blog/how-to-improve-performance-upsert-amazon-redshift/
+
