@@ -77,6 +77,5 @@ Task:
 
 Next:
 - Have a look at Ganglia
-- Quick look at Hue
 
 

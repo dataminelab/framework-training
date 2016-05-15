@@ -48,7 +48,7 @@ WHERE
  year >= 1890 AND
  gram REGEXP "^[A-Za-z+'-]+$";
  
--- calculate word ration by decade
+-- calculate word ratios by decades
 
 CREATE TABLE by_decade (
  gram string,
