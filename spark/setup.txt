@@ -1,0 +1,42 @@
+Install AWS cli:
+http://docs.aws.amazon.com/cli/latest/userguide/installing.html
+
+```
+sudo pip install awscli --ignore-installed six
+```
+
+## Test installation worked
+aws help
+
+## Configure AWS access
+
+```
+$ aws configure
+AWS Access Key ID [None]: 
+AWS Secret Access Key [None]: 
+Default region name [None]: us-east-1
+Default output format [None]: ENTER
+```
+
+## Create a new cluster programatically
+
+See possible options for more details:
+http://docs.aws.amazon.com/cli/latest/reference/emr/create-cluster.html
+
+Create cluster, preinstall Kinesis library files (will be useful later)
+
+aws emr create-cluster --release-label emr-4.5.0 --applications Name=Spark Name=Hive --ec2-attributes KeyName=webserver-key-pair --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --bootstrap-actions Path=s3://amopublic/blog/DownloadKCLtoEMR450.sh,Name=InstallKCLLibs --configurations https://s3.amazonaws.com/amopublic/blog/thiftchange_sparkconf.json
+
+# List clusters
+aws emr list-clusters --active
+
+# SSH to a cluster once it was created
+aws emr ssh --cluster-id j-1QAKCPOHF1G2H --key-pair-file ~/Downloads/webserver-key-pair.pem
+
+# Run spark commands - see spark.txt
+
+# Terminate cluster
+aws emr terminate-clusters --cluster-ids j-1X9V9Y6M4PQOY
+
+
+

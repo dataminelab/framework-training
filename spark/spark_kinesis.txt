@@ -1,0 +1,27 @@
+# Spark & Kinesis
+
+aws configure # (configure access on EMR cluster)
+
+Create a Kinesis stream where we will be writing data into:
+aws kinesis create-stream --stream-name myStream --shard-count 1
+
+# Generate sample data and send into Kinesis
+# SSH to EMR cluster master
+
+wget wget https://s3.amazonaws.com/aws-bigdata-blog/artifacts/Querying_Amazon_Kinesis/webaccesstraffic_generator.py
+python webaccesstraffic_generator.py
+
+# SSH to EMR cluster master in a separate window
+# Submit Spark job to cluster
+
+wget https://s3.amazonaws.com/aws-bigdata-blog/artifacts/Querying_Amazon_Kinesis/kinesis-test_2.11-1.0.jar
+
+spark-submit --verbose --master local[*] --class "org.apache.spark.examples.streaming.KinesisWatch" --jars /tmp/amazon-kinesis-client-1.2.1.jar,/tmp/spark-streaming-kinesis-asl_2.10-1.6.1.jar file:///home/hadoop/kinesis-test_2.11-1.0.jar "test-spark-streaming" "myStream" "https://kinesis.us-east-1.amazonaws.com" "10000" "userid url timestamp" "," "inputkinesis"
+
+Tutorial adopted from:
+https://blogs.aws.amazon.com/bigdata/post/Tx3916WCIUPVA3T/Querying-Amazon-Kinesis-Streams-Directly-with-SQL-and-Spark-Streaming
+
+# Submiting Spark jobs to cluster
+
+See for more info: http://spark.apache.org/docs/latest/submitting-applications.html
+

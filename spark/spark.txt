@@ -1,0 +1,65 @@
+# Spark
+
+Task: 
+- Create S3 bucket
+- Upload Hamlet txt there, from: https://ia802607.us.archive.org/13/items/shakespeareshaml01shak/shakespeareshaml01shak_djvu.txt
+
+See docs: http://spark.apache.org/docs/latest/programming-guide.html
+
+MASTER=yarn-client spark-shell --executor-memory 4G
+
+# Start with something easy - word-count
+
+val file = sc.textFile("s3://training-data/hamlet.txt")
+
+scala>:paste
+
+val counts = file
+  .flatMap(line => line
+    .toLowerCase()
+    .replace(".", " ")
+    .replace(",", " ")
+    .split(" "))
+  .map(word => (word, 1L))
+  .reduceByKey(_ + _)
+
+Ctrl+D
+
+# Check most 10 common words
+val sorted_counts = counts.collect().sortBy(wc => -wc._2)
+sorted_counts.take(10).foreach(println)
+
+# Save results in S3
+sc.parallelize(sorted_counts).saveAsTextFile("s3://[your-bucket-name]/wordcount-hamlet")
+
+# Pi estimation
+var NUM_SAMPLES=1000000
+val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>
+  val x = Math.random()
+  val y = Math.random()
+  if (x*x + y*y < 1) 1 else 0
+}.reduce(_ + _)
+println("Pi is roughly " + 4.0 * count / NUM_SAMPLES)
+
+# Wikipedia traffic data analysis
+
+val file = sc.textFile("s3://support.elasticmapreduce/bigdatademo/sample/wiki")
+ 
+val reducedList = file.map(l => l.split(" ")).map(l => (l(1), l(2).toInt)).reduceByKey(_+_, 3)
+ 
+reducedList.cache
+ 
+val sortedList = reducedList.map(x => (x._2, x._1)).sortByKey(false).take(50)
+
+# Spark SQL
+
+MASTER=yarn-client spark-sql --executor-memory 4G
+
+SET spark.sql.shuffle.partitions=10;
+create external table wikistat (projectcode string, pagename string, pageviews int, pagesize int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' location 's3://support.elasticmapreduce/bigdatademo/sample/wiki';
+CACHE TABLE wikistat;
+select pagename, sum(pageviews) c from wikistat group by pagename order by c desc limit 10;
+
+
+
+
