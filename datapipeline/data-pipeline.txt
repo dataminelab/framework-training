@@ -1,0 +1,35 @@
+
+Example Data Pipeline
+
+1. Upload data/access_log_0 to bucket-name/apache-logs/access_log_0
+
+Note the enpoint URL, for example: s3://testbucket-radek/apache-logs/access_log_0
+
+2. Create a Data Pipeline
+
+https://console.aws.amazon.com/datapipeline/
+
+name: data-pipeline-logs
+Type: Build Using Architect
+on pipeline activation
+logging disabled
+IAM roles - default
+
+Edit in architect
+
+Add -> S3 data node
+Configure S3 File Path: Use S3 endpoint
+
+Add -> Pig Activity
+Upload pig/logs-data-pipeline.pig to testbucket
+Provide as UR:
+s3://testbucket-radek/logs-data-pipeline.pig
+
+On save - see errors, create automatically default EMR cluster
+
+Run the pipeline!
+
+3. Import results into Redshift (optional - Redshift needs to be created first)
+
+(see created resource and try to create it)
+
