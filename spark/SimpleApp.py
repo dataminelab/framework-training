@@ -9,4 +9,4 @@ logData = sc.textFile(logFile).cache()
 numAs = logData.filter(lambda s: 'Hamlet' in s).count()
 numBs = logData.filter(lambda s: 'King' in s).count()
 
-print("Lines with Hamlet: %i, lines with b: %i" % (numAs, numBs))
+print("Lines with Hamlet: %i, lines with King: %i" % (numAs, numBs))
