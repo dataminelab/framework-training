@@ -20,6 +20,10 @@ spark-submit --master local[4] SimpleApp.py
 
 spark-submit --master local[4] SparkSql.py
 
+or submit it to yarn-cluster
+
+spark-submit --master yarn-client ./SparkSql.py
+
 # Few options for adding spark step to the EMR cluster
 
 aws emr add-steps --cluster-id <your-cluster-job-id> --steps Name=Python Job,Jar=http://s3://elasticmapreduce/libs/script-runner/script-runner.jar,Args=[/home/hadoop/spark/bin/spark-submit,--deploy-mode,cluster,--master,yarn,s3://my_bucket/path/pythonjob.py,<comma separated list of arguments for your app>],ActionOnFailure=CONTINUE

@@ -7,6 +7,9 @@ dc1.large
 
 sudo yum install postgresql
 
+# You can also find a JDBC driver for your client program here
+https://s3.amazonaws.com/redshift-downloads/drivers/
+
 # Connect to Redshift
 
 psql -h cluster-name.chcbiiy009es.us-east-1.redshift.amazonaws.com -U username -p 5439 -d database_name
