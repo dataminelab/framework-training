@@ -1,0 +1,56 @@
+Start Spark cluster together with the Hive preinstalled
+
+aws emr create-cluster --release-label emr-4.6.0 --applications Name=Spark Name=Hive --ec2-attributes KeyName=webserver-key-pair --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+
+
+Ssh to it
+
+Configure Hive
+
+
+Copy the Hive config to Spark
+
+
+Execute:
+sudo -u spark /usr/lib/spark/sbin/start-thriftserver.sh --hiveconf hive.server2.thrift.port=10001
+
+Test connection using beeline
+
+beeline -u 'jdbc:hive2://localhost:10001/'
+
+Create a table:
+
+create external table wikistat (projectcode string, pagename string, pageviews int, pagesize int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' location 's3://support.elasticmapreduce/bigdatademo/sample/wiki';
+
+Verify table was created:
+
+show tables;
+
+Open port 10001 in security groups.
+
+Download JDBC or ODBC driver
+
+Download spark-assembly lib (it contains JDBC library):
+scp -i ~/webserver-key-pair.pem hadoop@ec2-54-227-97-3.compute-1.amazonaws.com:/usr/lib/spark/lib/spark-assembly-1.6.1-hadoop2.7.2-amzn-1.jar ./
+
+or:
+http://www.simba.com/drivers/spark-jdbc-odbc/
+
+Connect using other JDBC tools (i.e. Tableau or Squirrel)
+
+See how to configure SquirrelSql:
+http://www.atware.co.jp/blog/2015/5/28/y5qi4p6x175x1pgbdh32jnj5uss07r
+
+See how to connect Tableau with ODBC:
+http://kb.tableau.com/articles/knowledgebase/hadoop-hive-connection
+
+See for more info: https://discourse.looker.com/t/general-notes-for-connecting-looker-to-spark-sql/1679
+
+http://www.atware.co.jp/blog/2015/5/28/y5qi4p6x175x1pgbdh32jnj5uss07r
+
+http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/HiveJDBCDriver.html
+
+See also:
+http://mvnrepository.com/artifact/org.apache.hive/hive-jdbc/1.1.0
+http://mvnrepository.com/artifact/org.apache.hive/hive-cli/1.1.0
+

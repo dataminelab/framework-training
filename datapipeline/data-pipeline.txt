@@ -33,3 +33,7 @@ Run the pipeline!
 
 (see created resource and try to create it)
 
+--
+
+See as well how to run Standard python scripts with data pipeline:
+https://forums.aws.amazon.com/thread.jspa?messageID=718159&#718159
