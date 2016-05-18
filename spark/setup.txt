@@ -29,7 +29,7 @@ aws emr create-cluster --release-label emr-4.5.0 --applications Name=Spark Name=
 
 # Create cluster for JDBC Spark SQL
 
-aws emr create-cluster --release-label emr-4.6.0 --applications Name=Spark Name=Hive --ec2-attributes KeyName=webserver-key-pair --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge
+aws emr create-cluster --release-label emr-4.6.0 --applications Name=Spark Name=Hive --ec2-attributes KeyName=webserver-key-pair --use-default-roles --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m3.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m3.xlarge --name Test Cluster
 
 # List clusters
 aws emr list-clusters --active
