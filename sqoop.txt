@@ -1,13 +1,13 @@
 ## Sqoop
 
-# Hadoop 1.0 required
-
 # installation
-wget http://www.mirrorservice.org/sites/ftp.apache.org/sqoop/1.4.5/sqoop-1.4.5.bin__hadoop-1.0.0.tar.gz
-tar xzvf sqoop-1.4.5.bin__hadoop-1.0.0.tar.gz
-sudo mv sqoop-1.4.5.bin__hadoop-1.0.0 /usr/lib/sqoop
-cd /usr/lib/sqoop/
+wget http://apache.mirror.anlx.net/sqoop/1.4.6/sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
+
+tar zxvf ./sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz
+
+sudo mv ./sqoop-1.4.6.bin__hadoop-2.0.4-alpha/ /usr/lib/sqoop
 export PATH=$PATH:/usr/lib/sqoop/bin/
+
 
 # Download MySQL JDBC driver
 wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.30.tar.gz
@@ -20,14 +20,16 @@ cp mysql-connector-java-5.1.30/mysql-connector-java-5.1.30-bin.jar /usr/lib/sqoo
 # https://www.youtube.com/watch?v=1dNZaKLjYbc
 # Forensic public database: 250k messages, 1.5M receipients
 
-wget https://s3.amazonaws.com/rjurney_public_web/images/enron.mysql.5.5.20.sql.gz
+see: http://opendata.stackexchange.com/questions/3802/enron-email-dataset-in-mysql
+wget http://www.ahschulz.de/pub/R/data/enron-mysqldump_v5.sql.gz
 
-gzip -d enron.mysql.5.5.20.sql.gz
+gzip -d enron-mysqldump_v5.sql.gz
+
 
 mysql -u root -e 'create database enron'
 
 # import data
-mysql -u root < enron.mysql.5.5.20.sql
+mysql -u root enron < ./enron-mysqldump_v5.sql
 
 
 # create new table with the data we are interested in
@@ -37,44 +39,41 @@ grant all on enron.* to 'enron'@localhost identified by 'enr0n';
 
 # just for this experiment (not recommended overall)
 # this is required so the sqoop can connect to mysql
-sudo vi /etc/mysql/my.cnf
+sudo vi /etc/my.cnf
 bind-address = 0.0.0.0
-sudo /etc/init.d/mysql restart
+sudo service mysqld restart
 
 # test it
 mysql -u enron -h 127.0.0.1 enron -p
 
-CREATE TABLE enron_messages AS 
-select m.smtpid as message_id, m.messagedt as date, s.email as from_address, s.name as from_name, m.subject as subject, b.body as body from messages m join people s on m.senderid=s.personid join bodies b on m.messageid=b.messageid;
-# Sqoop requires PK
-ALTER TABLE enron_messages ADD PRIMARY KEY (message_id);
-
 # import this data into HDFS using Sqoop
 
-# hadoop fs -rmr /user/hadoop/enron_messages
+# Delete folder when reimporting data
+# hadoop dfs -rmr /user/hadoop/message
 
 # note, use private DNS IP (see aws EC2 console)
 
-sqoop import --connect jdbc:mysql://ip-10-239-6-83.ec2.internal:3306/enron --username enron --table enron_messages --direct --password "enr0n" --fields-terminated-by='\t'
+sqoop import --connect jdbc:mysql://ip-10-239-6-83.ec2.internal:3306/enron --username enron --table message --direct --password "enr0n" --fields-terminated-by='\t'
 
 # create Hive table
 
 hive
 
 create external table enron_messages (
-  message_id string,
+  mid int,
+  sender string,
   date timestamp,
-  from_address string,
-  from_name string,
+  message_id string,
   subject string,
-  body string
+  body string,
+  folder string
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
-location '/user/hadoop/enron_messages';
+location '/user/hadoop/message';
 
 select * from enron_messages limit 5;
 
-select * from enron_messages where body like "%keywoard%" limit 10;
+select * from enron_messages where body like "%keyword%" limit 10;
 
 
 ### Avro
