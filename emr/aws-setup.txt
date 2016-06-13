@@ -48,7 +48,6 @@ hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
 Execute streaming MapReduce Python:
 
 ```
-hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
 STREAMING_JAR=/usr/lib/hadoop-mapreduce/hadoop-streaming.jar
 hadoop jar $STREAMING_JAR -files ./mapper.py,./reducer.py -mapper ./mapper.py -reducer ./reducer.py -input /user/sample/words.txt -output /user/sample/words-output
 ```
