@@ -86,12 +86,13 @@ WITH SERDEPROPERTIES (
         "name": "EnronMessages",
         "namespace": "com.example.avro",
         "fields": [
-            { "name":"message_id",  "type":["null","string"]},
+            { "name":"mid",  "type":"int"},
+            { "name":"sender",  "type":["null","string"]},
             { "name":"date",     "type":["null","string"]},
-            { "name":"from_address", "type":["null","string"]},
-            { "name":"from_name", "type":["null","string"]},
+            { "name":"message_id", "type":["null","string"]},
             { "name":"subject", "type":["null","string"]},
-            { "name":"body", "type":["null","string"]}
+            { "name":"body", "type":["null","string"]},
+            { "name":"folder", "type":["null","string"]}
         ]
     }'
 )

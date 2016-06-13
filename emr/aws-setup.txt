@@ -40,6 +40,7 @@ Map Reduce streaming:
 Upload data into HDFS:
 
 ```
+hdfs dfs -mkdir /user/sample/
 hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
 
 ```
