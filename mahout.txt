@@ -2,24 +2,22 @@
 
 === maven ===
 
-wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz
-tar xzvf apache-maven-3.1.1-bin.tar.gz
-sudo mv ./apache-maven-3.1.1 /usr/lib/maven
+wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
+tar xzvf ./apache-maven-3.3.3-bin.tar.gz
+sudo mv ./apache-maven-3.3.3 /usr/lib/maven
 export PATH=/usr/lib/maven/bin:$PATH
 
 == mahout ===
 
-Download release 0.7.0:
-http://www.apache.org/dyn/closer.cgi/mahout/
+# Download:
+# http://www.apache.org/dyn/closer.cgi/mahout/
 
-wget https://archive.apache.org/dist/mahout/0.7/mahout-distribution-0.7-src.tar.gz
-tar xzvf mahout-distribution-0.7-src.tar.gz
-cd ./mahout-distribution-0.7
+wget http://archive.apache.org/dist/mahout/0.12.2/apache-mahout-distribution-0.12.2-src.tar.gz
+tar xzvf apache-mahout-distribution-0.12.2-src.tar.gz
+cd apache-mahout-distribution-0.12.2
 
 # build
 mvn package -DskipTests
-
-cd ..
 
 == Recommendation engine ==
 
@@ -32,15 +30,11 @@ u.user: contains several tuples(user_id, age, gender, occupation, zip_code)
 u.item: contains several tuples(movie_id, title, release_date, video_release_data, imdb_url, cat_unknown, cat_action, cat_adventure, cat_animation, cat_children, cat_comedy, cat_crime, cat_documentary, cat_drama, cat_fantasy, cat_film_noir, cat_horror, cat_musical, cat_mystery, cat_romance, cat_sci_fi, cat_thriller, cat_war, cat_western)
 
 # Add data to HDFS
-# cd ml-100k
-
-# hadoop fs -rmr temp
 hadoop fs -mkdir -p /maven
 hadoop fs -copyFromLocal ml-100k/u.data /maven/u.data
 
 # Run recommendation engine
-export MAHOUT_HOME=/home/hadoop/mahout-distribution-0.7/core/target/
-hadoop jar $MAHOUT_HOME/mahout-core-0.7-job.jar org.apache.mahout.cf.taste.hadoop.item.RecommenderJob -s SIMILARITY_COOCCURRENCE --input /maven/u.data --output /maven/output
+hadoop jar ./mr/target/mahout-mr-0.12.2-job.jar org.apache.mahout.cf.taste.hadoop.item.RecommenderJob -s SIMILARITY_COOCCURRENCE --input /maven/u.data --output /maven/output
 
 # SIMILARITY COOCURRENCE, two items(movies) are very similar if they often appear together in users’ rating
 # See: http://grepcode.com/file/repo1.maven.org/maven2/org.apache.mahout/mahout-core/0.7/org/apache/mahout/math/hadoop/similarity/cooccurrence/measures/VectorSimilarityMeasures.java
@@ -48,7 +42,7 @@ hadoop jar $MAHOUT_HOME/mahout-core-0.7-job.jar org.apache.mahout.cf.taste.hadoo
 # Merge output
 hadoop fs -getmerge /maven/output output.txt
 
-python ../framework-training/mahout_show_recommendations.py 4 u.data u.item output.txt
+python ../framework-training/mahout_show_recommendations.py 4 ./ml-100k/u.data ./ml-100k/u.item output.txt
 
 # Where:
 # 4 - user ID
