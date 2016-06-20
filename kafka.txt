@@ -2,19 +2,6 @@ wget http://apache.mirror.anlx.net/kafka/0.8.1.1/kafka_2.9.2-0.8.1.1.tgz
 tar xvzf kafka_2.9.2-0.8.1.1.tgz
 cd kafka_2.9.2-0.8.1.1
 
-# installation of sbt/scala might be necessary
-wget http://apt.typesafe.com/repo-deb-build-0002.deb
-sudo dpkg -i repo-deb-build-0002.deb
-sudo apt-get update
-sudo apt-get install sbt
-
-# alternatively look at manual installation
-http://www.scala-sbt.org/0.13/tutorial/Manual-Installation.html
-
-sbt update
-#sbt package
-#sbt sbt-dependency
-
 # start ZK
 bin/zookeeper-server-start.sh config/zookeeper.properties &
 
