@@ -1,8 +1,17 @@
 
 -- input has around ~ 2.2 TB
 
-set hive.base.inputformat=org.apache.hadoop.hive.ql.io.HiveInputFormat;
-set mapred.min.split.size=134217728;
+-- download smaller dataset
+
+wget http://s3.amazonaws.com/datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/1gram/data
+
+-- see all files: http://s3.amazonaws.com/datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/1gram/data
+
+-- upload to HDFS
+
+hdfs dfs -mkdir /user/ngrams/
+hdfs dfs -copyFromLocal ./data /user/ngrams/ngrams
+
 
 CREATE EXTERNAL TABLE english_1grams (
  gram string,
@@ -13,23 +22,9 @@ CREATE EXTERNAL TABLE english_1grams (
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
-LOCATION 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/';
+LOCATION '/user/ngrams/';
 
--- CREATE EXTERNAL TABLE english_1grams_small (
---  gram string,
---  year int,
---  occurrences bigint,
---  pages bigint,
---  books bigint
--- )
--- ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
--- STORED AS SEQUENCEFILE
--- LOCATION 's3://ft-bucket1/ngrams/1gram/';
-
--- INSERT OVERWRITE TABLE english_1grams_small
--- SELECT * FROM english_1grams LIMIT 5000000;
-
--- normalize the data
+-- location 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/'
 
 CREATE TABLE normalized (
  gram string,

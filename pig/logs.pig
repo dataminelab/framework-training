@@ -1,5 +1,6 @@
 
-RAW_LOGS = LOAD 's3://elasticmapreduce/samples/pig-apache/input/' USING TextLoader as (line:chararray);
+RAW_LOGS = LOAD 's3://test-northcalifornia1/access_log_0.txt' USING TextLoader as (line:chararray);
+
 LOGS = FOREACH RAW_LOGS GENERATE 
     FLATTEN( 
       REGEX_EXTRACT_ALL(line, '^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] "(.+?)" (\\S+) (\\S+) "([^"]*)" "([^"]*)"')
