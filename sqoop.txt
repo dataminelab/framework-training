@@ -62,7 +62,7 @@ hive
 create external table enron_messages (
   mid int,
   sender string,
-  date timestamp,
+  date_time timestamp,
   message_id string,
   subject string,
   body string,
