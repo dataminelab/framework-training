@@ -2,9 +2,9 @@
 
 === maven ===
 
-wget http://www.mirrorservice.org/sites/ftp.apache.org/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
-tar xzvf ./apache-maven-3.3.3-bin.tar.gz
-sudo mv ./apache-maven-3.3.3 /usr/lib/maven
+wget http://mirrors.muzzy.org.uk/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+tar xzvf ./apache-maven-3.3.9-bin.tar.gz
+sudo mv ./apache-maven-3.3.9 /usr/lib/maven
 export PATH=/usr/lib/maven/bin:$PATH
 
 == mahout ===
