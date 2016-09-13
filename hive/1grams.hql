@@ -5,7 +5,7 @@
 
 wget http://s3.amazonaws.com/datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/1gram/data
 
--- see all files: http://s3.amazonaws.com/datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/1gram/data
+-- see all files: http://s3.amazonaws.com/datasets.elasticmapreduce/
 
 -- upload to HDFS
 
