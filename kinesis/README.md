@@ -8,7 +8,7 @@ See for more info: http://docs.aws.amazon.com/firehose/latest/dev/writing-with-a
 ### Installation 
 
 ```
-sudo yum install –y https://s3.amazonaws.com/streaming-data-agent/aws-kinesis-agent-latest.amzn1.noarch.rpm
+sudo yum install –y aws-kinesis-agent
 ```
 
 ### Configuration
