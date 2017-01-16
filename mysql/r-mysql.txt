@@ -1,0 +1,29 @@
+
+Install & Open R
+
+install.packages("RMySQL")
+library(RMySQL)
+
+# create necessary tables
+
+con = dbConnect(MySQL(), user='root', password='', dbname='test', host='localhost')
+
+# create sample data
+
+dbListTables(con)
+
+# create dummy data
+x <- 1:10
+y <- letters[1:10]
+trial <- data.frame(x, y)
+
+dbWriteTable(con, name='trials', value=trial)
+
+dbListFields(con, "trails")
+
+rs = dbSendQuery(con, "select * from trials")
+dbColumnInfo(rs)
+
+data = fetch(rs, n=-1)
+
+dbDisconnect(con)

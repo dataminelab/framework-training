@@ -1,12 +1,22 @@
 
 Create a new table and insert records:
 
+We have following options:
+* Run local version of MySQL (let's start from this)
+* Run MySQL RDS on AWS
+* Run Aurora on AWS
+
+Also see a mysql client:
+http://dev.mysql.com/downloads/workbench/
+
+
 ```
 CREATE TABLE shop (
     article INT(4) UNSIGNED ZEROFILL DEFAULT '0000' NOT NULL,
     dealer  CHAR(20)                 DEFAULT ''     NOT NULL,
     price   DOUBLE(16,2)             DEFAULT '0.00' NOT NULL,
     PRIMARY KEY(article, dealer));
+
 INSERT INTO shop VALUES
     (1,'A',3.45),(1,'B',3.99),(2,'A',10.99),(3,'B',1.45),
     (3,'C',1.69),(3,'D',1.25),(4,'D',19.95);
@@ -194,6 +204,12 @@ SELECT s.* FROM person p INNER JOIN shirt s
 
 Group by
 
+Note:
+BIT_COUNT returns number of bits for the specified numbers in the argument
+see:
+SELECT BIT_COUNT(8),BIT_COUNT(24),BIT_COUNT(28),BIT_COUNT(255); 
+
+
 ```
 CREATE TABLE t1 (year YEAR(4), month INT(2) UNSIGNED ZEROFILL,
              day INT(2) UNSIGNED ZEROFILL);
@@ -211,6 +227,7 @@ SELECT year,month,BIT_COUNT(BIT_OR(1<<day)) AS days FROM t1
 +------+-------+------+
 
 ```
+Query determines how many different days in each month these visits occur. The query calculates how many different days appear in the table for each year-month combination, with automatic removal of duplicate entries.
 
 Auto increment:
 
