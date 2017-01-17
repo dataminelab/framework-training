@@ -2,7 +2,7 @@
 
 cd
 
-yum install gcc
+sudo yum install gcc
 
 mkdir redis
 cd redis
