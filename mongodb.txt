@@ -8,7 +8,7 @@ mv mongodb-linux-x86_64-2.6.4 mongo
 export PATH=/home/ec2-user/mongo/bin:$PATH
 mkdir mongodata
 export LC_ALL=C
-mongod --dbpath /home/hadoop/mongodata --smallfiles --quiet &
+mongod --dbpath /home/ec2-user/mongodata --smallfiles --quiet &
 
 ==
 
