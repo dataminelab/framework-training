@@ -1,6 +1,9 @@
 # See: http://db-engines.com/en/ranking
 
 cd
+
+sudo yum install gcc
+
 mkdir redis
 cd redis
 wget http://download.redis.io/redis-stable.tar.gz
