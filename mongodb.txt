@@ -80,6 +80,35 @@ db.users.update({name: 'Cash'}, {'$set': {'age': 50} });
 db.users.update({name: 'Sue'}, {'$pull': {'languages': 'scala'} }); 
 db.users.remove({name: 'Sue'});
 
+
+R and Mongo
+
+install.packages('mongolite')
+library(mongolite)
+
+m <- mongo(collection = "diamonds", url = "mongodb://localhost")
+
+data(diamonds, package="ggplot2")
+m$insert(diamonds)
+
+m$count()
+nrow(diamonds)
+
+out <- m$find('{"cut" : "Premium", "price" : { "$lt" : 1000 } }')
+
+tbl <- m$mapreduce(
+  map = "function(){emit({cut:this.cut, color:this.color}, 1)}",
+  reduce = "function(id, counts){return Array.sum(counts)}"
+)
+head(tbl)
+
+m$drop()
+
+see:
+https://cran.r-project.org/web/packages/mongolite/vignettes/intro.html
+
+
+
 -- References
 
 http://docs.mongodb.org/manual/tutorial/getting-started/
