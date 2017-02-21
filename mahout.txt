@@ -2,10 +2,15 @@
 
 === maven ===
 
-wget http://mirrors.muzzy.org.uk/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-tar xzvf ./apache-maven-3.3.9-bin.tar.gz
-sudo mv ./apache-maven-3.3.9 /usr/lib/maven
-export PATH=/usr/lib/maven/bin:$PATH
+sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+
+sudo yum install -y apache-maven
+
+mvn --version
+
+see: http://stackoverflow.com/questions/7532928/how-do-i-install-maven-with-yum
 
 == mahout ===
 
