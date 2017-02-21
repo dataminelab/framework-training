@@ -40,8 +40,8 @@ Map Reduce streaming:
 Upload data into HDFS:
 
 ```
-hdfs dfs -mkdir /user/sample/
-hdfs dfs -copyFromLocal ./words.txt /user/sample/words.txt
+hdfs dfs -mkdir /user/root/
+hdfs dfs -copyFromLocal ./words.txt /user/root/words.txt
 
 ```
 
@@ -49,7 +49,7 @@ Execute streaming MapReduce Python:
 
 ```
 STREAMING_JAR=/usr/lib/hadoop-mapreduce/hadoop-streaming.jar
-hadoop jar $STREAMING_JAR -files ./mapper.py,./reducer.py -mapper ./mapper.py -reducer ./reducer.py -input /user/sample/words.txt -output /user/sample/words-output
+hadoop jar $STREAMING_JAR -files ./mapper.py,./reducer.py -mapper ./mapper.py -reducer ./reducer.py -input /user/root/words.txt -output /user/root/words-output
 ```
 
 Use the output URL to track the MapReduce job.
@@ -65,17 +65,13 @@ jar -cvf ./wordcount.jar -C java/target .
 
 Submit Jar to Hadoop for execution:
 ```
-hadoop jar ./wordcount.jar org.apache.WordCount /user/sample/words.txt /user/sample/words-output-2
+hadoop jar ./wordcount.jar org.apache.WordCount /user/root/words.txt /user/root/words-output-2
 ```
 
 # see results
-hdfs dfs -ls /user/sample/words-output-2
+hdfs dfs -ls /user/root/words-output-2
 
 Task:
 - download results using hdfs dfs to local machine
 - combine the files into a single output
-
-Next:
-- Have a look at Ganglia
-
 
