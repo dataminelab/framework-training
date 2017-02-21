@@ -1,17 +1,7 @@
 
 -- input has around ~ 2.2 TB
 
--- download smaller dataset
-
-wget http://s3.amazonaws.com/datasets.elasticmapreduce/ngrams/books/20090715/eng-1M/1gram/data
-
 -- see all files: http://s3.amazonaws.com/datasets.elasticmapreduce/
-
--- upload to HDFS
-
-hdfs dfs -mkdir /user/ngrams/
-hdfs dfs -copyFromLocal ./data /user/ngrams/ngrams
-
 
 CREATE EXTERNAL TABLE english_1grams (
  gram string,
@@ -22,9 +12,7 @@ CREATE EXTERNAL TABLE english_1grams (
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
-LOCATION '/user/ngrams/';
-
--- location 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/'
+location 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/'
 
 CREATE TABLE normalized (
  gram string,
