@@ -4,11 +4,13 @@ sudo yum install jna
 
 sudo vim /etc/yum.repos.d/datastax.repo
 
+```
 [datastax]
 name = DataStax Repo for Apache Cassandra
 baseurl = http://rpm.datastax.com/community
 enabled = 1
 gpgcheck = 0
+```
 
 sudo yum install dsc20
 
