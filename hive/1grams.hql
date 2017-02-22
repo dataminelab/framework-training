@@ -12,7 +12,7 @@ CREATE EXTERNAL TABLE english_1grams (
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
 STORED AS SEQUENCEFILE
-location 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/'
+location 's3://datasets.elasticmapreduce/ngrams/books/20090715/eng-all/1gram/';
 
 CREATE TABLE normalized (
  gram string,
