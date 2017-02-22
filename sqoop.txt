@@ -20,7 +20,7 @@ cp mysql-connector-java-5.1.30/mysql-connector-java-5.1.30-bin.jar /usr/lib/sqoo
 # https://www.youtube.com/watch?v=1dNZaKLjYbc
 # Forensic public database: 250k messages, 1.5M receipients
 
-see: http://opendata.stackexchange.com/questions/3802/enron-email-dataset-in-mysql
+# see: http://opendata.stackexchange.com/questions/3802/enron-email-dataset-in-mysql
 wget http://www.ahschulz.de/pub/R/data/enron-mysqldump_v5.sql.gz
 
 gzip -d enron-mysqldump_v5.sql.gz
