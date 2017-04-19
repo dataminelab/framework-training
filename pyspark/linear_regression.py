@@ -1,6 +1,16 @@
 # Linear regression - simple example from the official Spark repository 
 # just to get familiar with the API
 
+# Data is available at: https://github.com/apache/spark.git
+# Install git and clone example data
+sudo yum -y install git
+git clone https://github.com/apache/spark.git
+
+# copy data from a local disk to HDFS
+## old hadoop fs -put ./spark/data/mllib/ridge-data/lpsa.data /user/hadoop/lpsa.data
+hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
+
+
 from pyspark.ml.regression import LinearRegression
 
 # Load training data
@@ -25,8 +35,6 @@ print("Intercept: %s" % str(lrModel.intercept))
 # Summarize the model over the training set and print out some metrics
 trainingSummary = lrModel.summary
 print("numIterations: %d" % trainingSummary.totalIterations)
-# objective function (scaled loss + regularization) at each iteration
-print("objectiveHistory: %s" % str(trainingSummary.objectiveHistory))
 # Used to help if LR systematically over and under-predicts the data (bias)
 trainingSummary.residuals.show()
 # Root Mean Squared Error (RMSE) on test data
@@ -36,8 +44,9 @@ print("RMSE: %f" % trainingSummary.rootMeanSquaredError)
 # predictions are biased, which is why you must assess the residual plots.
 print("r2: %f" % trainingSummary.r2)
 
-
 ## NYC taxi data
+# We will create a linear regression model for predicting 
+# the size of the size of the NYC taxi driver tip
 
 wget https://github.com/Azure/Azure-MachineLearning-DataScience/blob/700f1f0d5dbb47eca9b6e7d4dbe11b91898febb3/Misc/KDDCup2016/Data/NYCTaxi/JoinedTaxiTripFare.Point1Pct.Test.tsv?raw=true -O taxi.tsv
 
@@ -55,6 +64,7 @@ from pyspark.ml.regression import LinearRegression
 from pyspark.ml import Pipeline
 from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
+from pyspark.sql.types import *
 
 
 # IMPORT FILE FROM PUBLIC BLOB
@@ -106,7 +116,7 @@ taxi_df_train_cleaned.registerTempTable("taxi_train")
 
 
 # FUNCTIONS FOR REGRESSION WITH TIP AMOUNT AS TARGET VARIABLE
-def parseRowOneHotRegression(line):
+def parseRowRegression(line):
 	return (line.tip_amount, Vectors.dense([line.pickup_hour, line.weekday, line.passenger_count,
                                         line.trip_time_in_secs, line.trip_distance, line.fare_amount]))
 
@@ -119,8 +129,8 @@ seed = 1234;
 trainData, testData = taxi_df_train_cleaned.randomSplit([trainingFraction, testingFraction], seed=seed)
 
 # FOR REGRESSION TRAINING AND TESTING
-oneHotTRAINreg = trainData.rdd.map(parseRowOneHotRegression)
-oneHotTESTreg = testData.rdd.map(parseRowOneHotRegression)
+trainReg = trainData.rdd.map(parseRowRegression)
+testReg = testData.rdd.map(parseRowRegression)
 
 ###  CV USING ELASTIC NET FOR LINEAR REGRESSION
 
@@ -155,12 +165,12 @@ cv = CrossValidator(estimator= lr,
 
 # TRAIN WITH CROSS-VALIDATION
 #cv_model = cv.fit(trainDataFrame)
-cv_model = cv.fit(oneHotTRAINreg.toDF(['label','features']))
+cv_model = cv.fit(trainReg.toDF(['label','features']))
 
 
 # EVALUATE MODEL ON TEST SET
 #testDataFrame = sqlContext.createDataFrame(oneHotTESTreg, ["features", "label"])
-testDataFrame = oneHotTESTreg.toDF(['label','features'])
+testDataFrame = testReg.toDF(['label','features'])
 
 # MAKE PREDICTIONS ON TEST DOCUMENTS
 # cvModel uses the best model found (lrModel).

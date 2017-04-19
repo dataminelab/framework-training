@@ -6,6 +6,7 @@
 
 # Highly recommended to run with iPython on AWS
 sudo pip install ipython[all]
+sudo pip install numpy
 
 # Ipython - powerful python shell (tab-completion, debugging, and more)
 # See for more details: https://ipython.org/
@@ -31,6 +32,14 @@ mat = sc.parallelize(
 print(mat.collect()) # this could be a problem on large datasets
 print(mat.take(10)) # collect with the limit
 
+# Notes: Transformations are run on cluster
+rdd.foreach(println) # will print on each executor, what you want is
+rdd.take(100).foreach(println)
+
+# Transformations: http://spark.apache.org/docs/latest/programming-guide.html#transformations
+# Actions
+# Some operations require key/values (reduceByKey, sortByKey, etc)
+
 
 # Compute column summary statistics.
 summary = Statistics.colStats(mat)
@@ -38,21 +47,39 @@ print(summary.mean())  # a dense vector containing the mean value for each colum
 print(summary.variance())  # column-wise variance
 print(summary.numNonzeros())  # number of nonzeros in each column
 
-# Data is available at: https://github.com/apache/spark.git
-# Install git and clone example data
-sudo yum -y install git
-git clone https://github.com/apache/spark.git
+# Correlations
 
-# copy data from a local disk to HDFS
-## old hadoop fs -put ./spark/data/mllib/ridge-data/lpsa.data /user/hadoop/lpsa.data
-hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
+from pyspark.mllib.stat import Statistics
+
+seriesX = sc.parallelize([1.0, 2.0, 3.0, 3.0, 5.0])  # a series
+# seriesY must have the same number of partitions and cardinality as seriesX
+seriesY = sc.parallelize([11.0, 22.0, 33.0, 33.0, 555.0])
+
+# Compute the correlation using Pearson's method. Enter "spearman" for Spearman's method.
+# If a method is not specified, Pearson's method will be used by default.
+print("Correlation is: " + str(Statistics.corr(seriesX, seriesY, method="pearson")))
+
+data = sc.parallelize(
+    [np.array([1.0, 10.0, 100.0]), np.array([2.0, 20.0, 200.0]), np.array([5.0, 33.0, 366.0])]
+)  # an RDD of Vectors
+
+# calculate the correlation matrix using Pearson's method. Use "spearman" for Spearman's method.
+# If a method is not specified, Pearson's method will be used by default.
+print(Statistics.corr(data, method="pearson"))
+
+# See: https://spark.apache.org/docs/latest/mllib-statistics.html#correlations
+
+# Churn - which customers (of a telecommunications company) are likely to stop using their service
+# Churn dataset provided by the UC Irvine machine-learning repository hosted by SGI
+# Data from https://www.sgi.com/tech/mlc/db/churn.all
+wget https://www.sgi.com/tech/mlc/db/churn.all
 
 # Classification - Random Forest
 
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
  
-sqlContext = SQLContext(sc)
+#sqlContext = SQLContext(sc)
 schema = StructType([ \
     StructField("state", StringType(), True), \
     StructField("account_length", DoubleType(), True), \
@@ -76,8 +103,6 @@ schema = StructType([ \
     StructField("number_customer_service_calls", DoubleType(), True), \
     StructField("churned", StringType(), True)])
  
-# Data from https://www.sgi.com/tech/mlc/db/churn.all
-wget https://www.sgi.com/tech/mlc/db/churn.all
 # task: upload to HDFS
 
 churn_data = sqlContext.read \
@@ -119,7 +144,11 @@ evaluator = BinaryClassificationEvaluator()
 # 
 auroc = evaluator.evaluate(predictions, {evaluator.metricName: "areaUnderROC"})
 
+predictions.take(3)
+
 # See for more: http://blog.cloudera.com/blog/2016/02/how-to-predict-telco-churn-with-apache-spark-mllib/
+
+pip install pandas
 
 #########################
 # Logistic regression
@@ -129,6 +158,8 @@ auroc = evaluator.evaluate(predictions, {evaluator.metricName: "areaUnderROC"})
 # Goal: Predict survival based on passenger characteristics
 
 import pandas as pd
+from pyspark.ml.feature import VectorAssembler
+
 url = 'https://raw.githubusercontent.com/justmarkham/DAT8/master/data/titanic.csv'
 titanic = pd.read_csv(url, index_col='PassengerId')
 titanic.head()
@@ -158,6 +189,9 @@ lrModel = lr.fit(trainingData)
 # LogisticRegression.transform() will only use the 'features' column.
 predictions = lrModel.transform(testData)
 predictions.printSchema()
+
+# check predictions
+predictions.take(10)
 
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 
@@ -194,15 +228,12 @@ import gnuplotlib as gp
 
 roc = trainingSummary.roc.toPandas()
 
->>> gp.plot( (roc.FPR, roc.TPR),
-...          _with    = 'lines',
-...          terminal = 'dumb 80,40',
-...          unset    = 'grid')
+gp.plot( (roc.FPR, roc.TPR),
+          _with    = 'lines',
+          terminal = 'dumb 80,40',
+          unset    = 'grid')
 
 # See also: https://github.com/justmarkham/DAT8/blob/master/notebooks/12_titanic_confusion.ipynb
 # and: https://github.com/justmarkham/DAT8#class-12-logistic-regression
 
-# TODOs
-
-PCA: https://www.coursera.org/learn/machine-learning/home/week/8
 
