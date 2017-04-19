@@ -13,6 +13,8 @@ sudo pip install numpy
 
 # Run it as:
 PYSPARK_DRIVER_PYTHON=ipython pyspark
+# to run with few local cores
+PYSPARK_DRIVER_PYTHON=ipython pyspark --master local[4]
 
 # It might be necessary to run it with more memory
 PYSPARK_DRIVER_PYTHON=ipython pyspark --driver-memory 512m --executor-memory 512m
