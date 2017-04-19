@@ -3,12 +3,12 @@
 
 # Data is available at: https://github.com/apache/spark.git
 # Install git and clone example data
-sudo yum -y install git
-git clone https://github.com/apache/spark.git
+$ sudo yum -y install git
+$ git clone https://github.com/apache/spark.git
 
 # copy data from a local disk to HDFS
 ## old hadoop fs -put ./spark/data/mllib/ridge-data/lpsa.data /user/hadoop/lpsa.data
-hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
+$ hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
 
 
 from pyspark.ml.regression import LinearRegression
@@ -48,7 +48,7 @@ print("r2: %f" % trainingSummary.r2)
 # We will create a linear regression model for predicting 
 # the size of the size of the NYC taxi driver tip
 
-wget https://github.com/Azure/Azure-MachineLearning-DataScience/blob/700f1f0d5dbb47eca9b6e7d4dbe11b91898febb3/Misc/KDDCup2016/Data/NYCTaxi/JoinedTaxiTripFare.Point1Pct.Test.tsv?raw=true -O taxi.tsv
+$ wget https://github.com/Azure/Azure-MachineLearning-DataScience/blob/700f1f0d5dbb47eca9b6e7d4dbe11b91898febb3/Misc/KDDCup2016/Data/NYCTaxi/JoinedTaxiTripFare.Point1Pct.Test.tsv?raw=true -O taxi.tsv
 
 # See for details:
 # https://docs.microsoft.com/en-us/azure/machine-learning/machine-learning-data-science-spark-overview#the-nyc-2013-taxi-data

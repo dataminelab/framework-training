@@ -5,19 +5,19 @@
 
 
 # Highly recommended to run with iPython on AWS
-sudo pip install ipython[all]
-sudo pip install numpy
+$ sudo pip install ipython[all]
+$ sudo pip install numpy
 
 # Ipython - powerful python shell (tab-completion, debugging, and more)
 # See for more details: https://ipython.org/
 
 # Run it as:
-PYSPARK_DRIVER_PYTHON=ipython pyspark
+$ PYSPARK_DRIVER_PYTHON=ipython pyspark
 # to run with few local cores
-PYSPARK_DRIVER_PYTHON=ipython pyspark --master local[4]
+$ PYSPARK_DRIVER_PYTHON=ipython pyspark --master local[4]
 
 # It might be necessary to run it with more memory
-PYSPARK_DRIVER_PYTHON=ipython pyspark --driver-memory 512m --executor-memory 512m
+$ PYSPARK_DRIVER_PYTHON=ipython pyspark --driver-memory 512m --executor-memory 512m
 
 # Statistics
 # Numpy - package for scientific computing with Python
@@ -74,7 +74,7 @@ print(Statistics.corr(data, method="pearson"))
 # Churn - which customers (of a telecommunications company) are likely to stop using their service
 # Churn dataset provided by the UC Irvine machine-learning repository hosted by SGI
 # Data from https://www.sgi.com/tech/mlc/db/churn.all
-wget https://www.sgi.com/tech/mlc/db/churn.all
+$ wget https://www.sgi.com/tech/mlc/db/churn.all
 
 # Classification - Random Forest
 
@@ -150,7 +150,7 @@ predictions.take(3)
 
 # See for more: http://blog.cloudera.com/blog/2016/02/how-to-predict-telco-churn-with-apache-spark-mllib/
 
-pip install pandas
+$ sudo pip install pandas
 
 #########################
 # Logistic regression
@@ -218,9 +218,9 @@ print("areaUnderROC: " + str(trainingSummary.areaUnderROC))
 #### Bonus: Visualisation example
 
 # Simple visualisations
-sudo yum install gnuplot
-sudo pip install gnuplotlib
-sudo pip install pandas
+$ sudo yum install gnuplot
+$ sudo pip install gnuplotlib
+$ sudo pip install pandas
 
 # Python Data Analysis Library
 # http://pandas.pydata.org/
