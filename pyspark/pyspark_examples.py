@@ -3,10 +3,18 @@
 
 # Start AWS cluster
 
+# Data is available at: https://github.com/apache/spark.git
+# Install git and clone example data
+$ sudo yum -y install git
+$ git clone https://github.com/apache/spark.git
+$ cd spark
 
 # Highly recommended to run with iPython on AWS
-$ sudo pip install ipython[all]
-$ sudo pip install numpy
+$ sudo pip install --upgrade pip
+$ export PATH=$PATH:/usr/local/bin/
+
+$ sudo /usr/local/bin/pip install ipython[all]
+$ sudo /usr/local/bin/pip install numpy
 
 # Ipython - powerful python shell (tab-completion, debugging, and more)
 # See for more details: https://ipython.org/
@@ -34,9 +42,9 @@ mat = sc.parallelize(
 print(mat.collect()) # this could be a problem on large datasets
 print(mat.take(10)) # collect with the limit
 
-# Notes: Transformations are run on cluster
-rdd.foreach(println) # will print on each executor, what you want is
-rdd.take(100).foreach(println)
+# Notes: Transformations are run on cluster - do not do this
+#rdd.foreach(println) # will print on each executor, what you want is
+#rdd.take(100).foreach(println)
 
 # Transformations: http://spark.apache.org/docs/latest/programming-guide.html#transformations
 # Actions
@@ -70,6 +78,56 @@ data = sc.parallelize(
 print(Statistics.corr(data, method="pearson"))
 
 # See: https://spark.apache.org/docs/latest/mllib-statistics.html#correlations
+
+# Classification - decision tree
+
+from pyspark.ml import Pipeline
+from pyspark.ml.classification import DecisionTreeClassifier
+from pyspark.ml.feature import StringIndexer, VectorIndexer
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+
+# Sample data from http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/
+
+# Load and parse the data file into an RDD of LabeledPoint.
+data = spark.read.format("libsvm").load('file:///home/hadoop/spark/data/mllib/sample_libsvm_data.txt')
+
+# Index labels, adding metadata to the label column.
+# Fit on whole dataset to include all labels in index.
+labelIndexer = StringIndexer(inputCol="label", outputCol="indexedLabel").fit(data)
+# Automatically identify categorical features, and index them.
+# We specify maxCategories so features with > 4 distinct values are treated as continuous.
+featureIndexer =\
+    VectorIndexer(inputCol="features", outputCol="indexedFeatures", maxCategories=4).fit(data)
+
+# Split the data into training and test sets (30% held out for testing)
+(trainingData, testData) = data.randomSplit([0.7, 0.3])
+
+# Train a DecisionTree model.
+dt = DecisionTreeClassifier(labelCol="indexedLabel", featuresCol="indexedFeatures")
+
+# Chain indexers and tree in a Pipeline
+pipeline = Pipeline(stages=[labelIndexer, featureIndexer, dt])
+
+# Train model.  This also runs the indexers.
+model = pipeline.fit(trainingData)
+
+# Make predictions.
+predictions = model.transform(testData)
+
+# Select example rows to display.
+predictions.select("prediction", "indexedLabel", "features").show(5)
+
+# Select (prediction, true label) and compute test error
+evaluator = MulticlassClassificationEvaluator(
+    labelCol="indexedLabel", predictionCol="prediction", metricName="accuracy")
+accuracy = evaluator.evaluate(predictions)
+print("Test Error = %g " % (1.0 - accuracy))
+
+treeModel = model.stages[2]
+# summary only
+print(treeModel)
+
+# see for more: https://spark.apache.org/docs/latest/ml-classification-regression.html#decision-tree-classifier
 
 # Churn - which customers (of a telecommunications company) are likely to stop using their service
 # Churn dataset provided by the UC Irvine machine-learning repository hosted by SGI
@@ -109,7 +167,7 @@ schema = StructType([ \
 
 churn_data = sqlContext.read \
     .format('com.databricks.spark.csv') \
-    .load('file:///Users/radek/spark/churn.all', schema = schema) # or file:///Users/radek/spark/churn.all
+    .load('file:///home/hadoop/spark/churn.all', schema = schema) # or file:///Users/radek/spark/churn.all
 
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.feature import VectorAssembler
@@ -150,7 +208,7 @@ predictions.take(3)
 
 # See for more: http://blog.cloudera.com/blog/2016/02/how-to-predict-telco-churn-with-apache-spark-mllib/
 
-$ sudo pip install pandas
+$ sudo /usr/local/bin/pip install pandas
 
 #########################
 # Logistic regression
@@ -219,8 +277,8 @@ print("areaUnderROC: " + str(trainingSummary.areaUnderROC))
 
 # Simple visualisations
 $ sudo yum install gnuplot
-$ sudo pip install gnuplotlib
-$ sudo pip install pandas
+$ sudo /usr/local/bin/pip install gnuplotlib
+$ sudo /usr/local/bin/pip install pandas
 
 # Python Data Analysis Library
 # http://pandas.pydata.org/

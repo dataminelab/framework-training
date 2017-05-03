@@ -1,24 +1,18 @@
 # Linear regression - simple example from the official Spark repository 
 # just to get familiar with the API
 
-# Data is available at: https://github.com/apache/spark.git
-# Install git and clone example data
-$ sudo yum -y install git
-$ git clone https://github.com/apache/spark.git
+from pyspark.ml.regression import LinearRegression
 
 # copy data from a local disk to HDFS
 ## old hadoop fs -put ./spark/data/mllib/ridge-data/lpsa.data /user/hadoop/lpsa.data
-$ hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
-
-
-from pyspark.ml.regression import LinearRegression
-
+#$ hadoop fs -put ./spark/data/mllib/sample_linear_regression_data.txt /user/hadoop/
 # Load training data
-data = spark.read.format("libsvm")\
-    .load("sample_linear_regression_data.txt")
+#data = spark.read.format("libsvm")\
+#    .load("sample_linear_regression_data.txt")
 # or read it from a local disk (if working with a local Spark)
+
 data = spark.read.format("libsvm")\
-    .load("file:///Users/radek/src/github/spark/data/mllib/sample_linear_regression_data.txt")
+    .load("file:///home/hadoop/spark/data/mllib/sample_linear_regression_data.txt")
 
 # split into training and test data
 (train, test) = data.randomSplit([0.7, 0.3])
@@ -68,7 +62,7 @@ from pyspark.sql.types import *
 
 
 # IMPORT FILE FROM PUBLIC BLOB
-taxi_train_file = sc.textFile("file:///Users/radek/spark/taxi.tsv")
+taxi_train_file = sc.textFile("file:///home/hadoop/spark/taxi.tsv")
 
 # GET SCHEMA OF THE FILE FROM HEADER
 schema_string = taxi_train_file.first()
