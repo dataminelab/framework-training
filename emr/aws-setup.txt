@@ -6,27 +6,13 @@ cd framework-training/
 # Poor man Hadoop
 cat words.txt | ./mapper.py | sort | ./reducer.py
 
-# Create EMR cluster
-
-Create a default EMR cluster
-
-Enable WebConnection - follow directions for your OS
-
-* SSH to EMR master
-* Checkout git repo with excercises
-
 Upload example data to HDFS before running examples:
 
 upload-data-to-hdfs.sh
 
 # Run Map Reduce excercises
 
-1. Python simple word-count
-
-cat words.txt | ./mapper.py | sort | ./reducer.py
-
-
-2. Explore HDFS
+Explore HDFS
 
 ```
 hdfs dfs -ls /
