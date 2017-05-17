@@ -2,6 +2,8 @@
 -- input has around ~ 2.2 TB
 
 -- see all files: http://s3.amazonaws.com/datasets.elasticmapreduce/
+-- see also: https://books.google.com/ngrams
+-- and: https://books.google.com/ngrams
 
 CREATE EXTERNAL TABLE english_1grams (
  gram string,
