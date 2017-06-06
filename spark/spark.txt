@@ -69,7 +69,8 @@ val sortedList = reducedList.map(x => (x._2, x._1)).sortByKey(false).take(50)
 MASTER=yarn-client spark-sql --executor-memory 4G
 
 SET spark.sql.shuffle.partitions=10;
-create external table wikistat (projectcode string, pagename string, pageviews int, pagesize int) ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' location 's3://support.elasticmapreduce/bigdatademo/sample/wiki';
+create external table wikistat (projectcode string, pagename string, pageviews int, pagesize int) 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' location 's3://support.elasticmapreduce/bigdatademo/sample/wiki';
 
 select pagename, sum(pageviews) c from wikistat group by pagename order by c desc limit 10;
 
