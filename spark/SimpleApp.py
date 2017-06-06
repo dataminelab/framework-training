@@ -1,3 +1,8 @@
+# Make sure to setup 
+# export SPARK_HOME=/usr/lib/spark
+# export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.10.4-src.zip:$PYTHONPATH
+# export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+
 """SimpleApp.py"""
 from pyspark import SparkContext
 
