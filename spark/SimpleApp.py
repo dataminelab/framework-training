@@ -6,7 +6,7 @@
 """SimpleApp.py"""
 from pyspark import SparkContext
 
-logFile = "s3://testbucket-radek/hamlet.txt"  # Should be some file on your system
+logFile = "s3://test-radek123/hamlet.txt"  # Should be some file on your system
 sc = SparkContext("local", "Simple App")
 
 logData = sc.textFile(logFile).cache()
