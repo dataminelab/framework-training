@@ -25,21 +25,6 @@ val counts = file
 
 Ctrl+D
 
-Pi estimation: explanation
-
-x*x + y*y < 1
-
-Square (A = 2) with circle inside (r = 1)
-
-count / NUM_SAMPLES <- number of times random point falls on circle
-
-count / NUM_SAMPLES = (Pi * r ^ 2) / (2r) ^ 2 
-                    = (Pi * r^2) / (4*r^2) 
-                    = Pi / 4
-
-Pi = (count / NUM_SAMPLES) * 4
-
-
 # Check most 10 common words
 val sorted_counts = counts.collect().sortBy(wc => -wc._2)
 sorted_counts.take(10).foreach(println)
@@ -55,6 +40,21 @@ val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>
   if (x*x + y*y < 1) 1 else 0
 }.reduce(_ + _)
 println("Pi is roughly " + 4.0 * count / NUM_SAMPLES)
+
+Pi estimation: explanation
+
+x*x + y*y < 1
+
+Square (A = 2) with circle inside (r = 1)
+
+count / NUM_SAMPLES <- number of times random point falls on circle
+
+count / NUM_SAMPLES = (Pi * r ^ 2) / (2r) ^ 2 
+                    = (Pi * r^2) / (4*r^2) 
+                    = Pi / 4
+
+Pi = (count / NUM_SAMPLES) * 4
+
 
 # Wikipedia traffic data analysis
 
