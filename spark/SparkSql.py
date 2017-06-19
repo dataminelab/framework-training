@@ -5,8 +5,8 @@ from pyspark.sql.types import *
 
 wikiFile = "s3://support.elasticmapreduce/bigdatademo/sample/wiki"
 # no need when running from pyspark to create new sc
-#sc = SparkContext("local", "Simple App")
-#sqlContext = SQLContext(sc)
+sc = SparkContext("local", "Simple App")
+sqlContext = SQLContext(sc)
 
 wikiRdd = sc.textFile(wikiFile).map(lambda line: line.split(" "))
 
