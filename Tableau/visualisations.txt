@@ -1,0 +1,160 @@
+
+Tableau
+
+Demo:
+
+- Import data
+  - Import Excel file - orders, see: https://github.com/dataminelab/framework-training/tree/master/Tableau
+  - Import CSV file - returned orders
+- Joins
+- Custom split (-)
+- Worksheet (Dimensions - categorical, Measures - numerical)
+- Visualisations: 
+  - Rows (Category, Segment)
+  - Columns (Quantity, Market)
+  - Color (Market)
+
+Seasonability
+
+- Measures: Sales
+- Dimensions: Order date, split by Quarter
+- Move year to color
+- Change Quarter to month
+- Measure calculations: year over year growth
+- Add sales again
+- Move YOY calculations to tooltip
+- Add category to rows
+- Right click and add annotations
+- Right click - copy data and paste to Excel
+
+Crosstab analytics - sales seasonality
+
+- duplicate as crosstab
+- swap the axis
+- move category to rows
+- hide title, entire view
+- add profits to colour
+- colour: edit colours - green-gold, 6 step colours
+- marks type: square, turn on mark labels
+- category: show highlighter
+
+Conclusion: Furniture profits are the lowest
+
+Profit analysis by country and state
+
+- select sales + country (with ctrl or cmd key)
+- show me - choose symbols map
+- drag & drop states
+- color - add transparency & borders
+- color by profit
+- search by country
+- unpin to zoom back
+
+Profits analytics by hemisphere
+
+Hypothesis: hemisphere has an impact on sales (this will validate the seasonality)
+- copy sheet
+- remove everything but country
+- use lasso tool, group items
+- go back to seasonality worksheet, add country(group) as first column
+- conclusion: there is no indication that seasonality has an effect on hemisphere
+
+
+- go back to profit by country
+- filter by category / furnitures
+- right click, show filter
+  - change to single value list
+
+Sales by subcategory
+
+- create new sheet
+- use show me
+- select: category, subcategory and sales
+- drag subcategory on category and call it "products" hierarchy
+- drag & drop product name under subcategory in product hierarchy
+- result: full drill-down capability
+- sort by sales, expand and sort again by quick-sort option
+- place profits on color
+- place market on the top
+- group subcategories based on small sales
+- rename it to "Small Office Supplies"
+- remove market and swap the axis
+
+
+
+Hypothesis: profitality is affected by the shipping cost
+
+- rows: profit
+- columns: shipping cost
+- color: category
+- drill into subcategory
+- add "Customer Id" to detail
+- to fully deaggregate the data unselect analysis -> aggregate to get 
+- this shows every transaction at the record level
+- select color next to customer ID and change to label
+- click on label, change subcategory format to italic
+- conclusion: large number of customers with low profits and significant delivery costs
+
+Customer breakout
+
+- rows: profit
+- columns: shipping cost
+- color: category
+- detail: customer ID
+- to fully deaggregate the data unselect analysis -> aggregate to get 
+- add trend line - notice very small R square
+- remove trend line
+- select all customers with less than -2k profit
+- view data, see full data
+- change category from color to shape
+- change color to grey
+- call worksheet: Customer breakout
+
+Sales Dashboard
+
+- click new dashboard: Sales dashboard
+- set size to automatic
+- drag&drop Profit by country
+- and sales by category 
+- and customer breakout
+- apply to worksheet -> all using this data source
+- in the map, click -> use as a filter
+- try to choose Panama and analyse the data
+
+
+Stories
+
+Assmble a series of views to walk the audience through the analysis
+
+- create new story
+- drag & drop - global sales and profits
+- add caption: Our profits are overall strong
+- add new "blank" story point
+- drag&drop sales dashboard on the blank story point
+- select Panama and click on update icon to save this view
+- add title: but there are problem areas
+
+Publishing the views
+
+- Server -> Publish workbook or just publish the data source
+- See: https://public.tableau.com/profile/radek7698#!/vizhome/GettingStarted_145/Story1
+
+Analytics
+- follow the screenshot
+- add forecast
+- add trendline to profts
+
+Data blending
+
+- see data_blending
+- check slides for details
+- see also Data -> Edit relationship
+
+
+See for more: https://www.tableau.com/learn/tutorials/on-demand/getting-started
+
+
+
+
+
+
