@@ -1,0 +1,27 @@
+docker.txt
+
+To access docker on OsX, see: https://stackoverflow.com/questions/39540471/cant-access-docker-container-on-port-80-on-osx
+
+Accessing via localhost doesn't work, instead check the IP address:
+
+# docker-machine ip default
+
+
+Example:
+
+Tensor-flow docker:
+https://www.tensorflow.org/install/install_mac
+
+docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow
+
+then follow up the instructions, for example this is mine URL to access the Jupyter notebook:
+http://192.168.99.100:8888/tree
+
+
+See also:
+https://github.com/jupyter/docker-stacks
+
+
+
+Notes:
+https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/
