@@ -1,4 +1,1 @@
-framework-training
-==================
-
-framework-training - Big Data Overview
+List of Big Data examples and tutorials.
