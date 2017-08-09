@@ -1,16 +1,22 @@
 docker.txt
 
-To access docker on OsX, see: https://stackoverflow.com/questions/39540471/cant-access-docker-container-on-port-80-on-osx
+Installation:
+https://docs.docker.com/engine/installation/
 
-Accessing via localhost doesn't work, instead check the IP address:
+# EC2
 
-# docker-machine ip default
+Installation on EC:
+http://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html
 
+Run:
+```
+sudo yum -y install docker
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+```
+relog
 
-Example:
-
-Tensor-flow docker:
-https://www.tensorflow.org/install/install_mac
+# Run docker Jupyter / tensorflow / numpy 
 
 docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow
 
@@ -20,7 +26,6 @@ http://192.168.99.100:8888/tree
 
 See also:
 https://github.com/jupyter/docker-stacks
-
 
 
 Notes:
