@@ -10,27 +10,27 @@ MASTER=yarn-client spark-shell --executor-memory 4G
 
 # Start with something easy - word-count
 
-val file = sc.textFile("s3://training-data/hamlet.txt")
-
 scala>:paste
 
-val counts = file
-  .flatMap(line => line
-    .toLowerCase()
-    .replace(".", " ")
-    .replace(",", " ")
-    .split(" "))
-  .map(word => (word, 1L))
-  .reduceByKey(_ + _)
+import org.apache.spark.sql.functions._
 
-Ctrl+D
+// Load a text file and interpret each line as a java.lang.String
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+val ds = sqlContext.read.text("s3://radek-training/hamlet.txt").as[String]
+val result = ds
+  .flatMap(_.split(" "))               // Split on whitespace
+  .filter(_ != "")                     // Filter empty words
+  .toDF()                              // Convert to DataFrame to perform aggregation / sorting
+  .groupBy($"value")                   // Count number of occurences of each word
+  .agg(count("*") as "numOccurances")
+  .orderBy($"numOccurances" desc)      // Show most common words first
 
-# Check most 10 common words
-val sorted_counts = counts.collect().sortBy(wc => -wc._2)
-sorted_counts.take(10).foreach(println)
+result.take(10).foreach(println)
+
+--
 
 # Save results in S3
-sc.parallelize(sorted_counts).saveAsTextFile("s3://[your-bucket-name]/wordcount-hamlet")
+result.rdd.saveAsTextFile("s3://radek-training/wordcount-hamlet")
 
 # Pi estimation
 var NUM_SAMPLES=1000000
@@ -58,22 +58,56 @@ Pi = (count / NUM_SAMPLES) * 4
 
 # Wikipedia traffic data analysis
 
+With RDDs:
+
 val file = sc.textFile("s3://support.elasticmapreduce/bigdatademo/sample/wiki")
- 
-val reducedList = file.map(l => l.split(" ")).map(l => (l(1), l(2).toInt)).reduceByKey(_+_, 3)
- 
+val reducedList = file.map(l => l.split(" ")).map(l => (l(1), l(2).toInt)).reduceByKey(_+_, 3) 
 val sortedList = reducedList.map(x => (x._2, x._1)).sortByKey(false).take(50)
+
+Example with DataSets:
+
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+val lines = sqlContext.read.text("s3://support.elasticmapreduce/bigdatademo/sample/wiki").as[String]
+val words = lines.flatMap(value => value.split("\\s+")).filter(_ != "")
+val groupedWords = words.groupByKey(value => value)
+val wordCounts = groupedWords.count()
+
+wordCounts.take(10).foreach(println)
+
+wordCounts.orderBy($"count(1)".desc).take(50).foreach(println)
+
+# Submitting scala/jar files to EMR
+
+```
+sudo yum install -y git
+git clone https://github.com/dataminelab/LearningSpark.git
+cd LearningSpark
+# Install sbt
+curl -s "https://get.sdkman.io" | bash
+source "/home/hadoop/.sdkman/bin/sdkman-init.sh"
+sdk install sbt
+# Build and package the Jar
+sbt package
+# Upload the Jar file into aws
+aws s3 cp ./target/scala-2.11/sparkexamples_2.11-1.0.jar s3://radek-training/
+```
+
+Submit job to EMR:
+```
+spark-submit --verbose --deploy-mode cluster --master yarn-cluster --num-executors 2 --executor-memory 1g --class S3WordCount s3://radek-training/sparkexamples_2.11-1.0.jar 
+```
+
+Alternatively copy the `jar` file into your S3 bucket.
 
 # Spark SQL
 
-MASTER=yarn-client spark-sql --executor-memory 4G
+MASTER=yarn-cluster spark-sql --executor-memory 4G
 
-SET spark.sql.shuffle.partitions=10;
 create external table wikistat (projectcode string, pagename string, pageviews int, pagesize int) 
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ' ' location 's3://support.elasticmapreduce/bigdatademo/sample/wiki';
 
 select pagename, sum(pageviews) c from wikistat group by pagename order by c desc limit 10;
 
-
-
+See also: 
+* pyspark.txt
 

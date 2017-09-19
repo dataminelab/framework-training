@@ -37,3 +37,8 @@ Tutorial based on:
 * Zeppelin docker
 * https://zeppelin.apache.org/docs/0.5.5-incubating/tutorial/tutorial.html
 
+* Real time streaming (old code)
+
+https://apps.twitter.com/
+Follow steps from: https://zeppelin.apache.org/docs/0.5.5-incubating/tutorial/tutorial.html
+

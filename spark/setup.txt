@@ -1,4 +1,4 @@
-Install AWS cli:
+Install AWS cli (these steps are not necessary when running from EMR master):
 http://docs.aws.amazon.com/cli/latest/userguide/installing.html
 
 ```

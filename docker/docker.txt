@@ -12,21 +12,29 @@ Run:
 ```
 sudo yum -y install docker
 sudo service docker start
+sudo usermod -a -G docker hadoop
 sudo usermod -a -G docker ec2-user
 ```
 relog
+
+# Run docker Jupyter / all spark
+
+docker run -it -p 8888:8888 jupyter/all-spark-notebook
+
+or:
 
 # Run docker Jupyter / tensorflow / numpy 
 
 docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow
 
-then follow up the instructions, for example this is mine URL to access the Jupyter notebook:
+then follow up the instructions, for example this is my URL to access the Jupyter notebook:
 http://192.168.99.100:8888/tree
 
+You might need to open the port
 
 See also:
-https://github.com/jupyter/docker-stacks
-
+* https://github.com/jupyter/docker-stacks
+* https://github.com/jadianes/spark-py-notebooks
 
 Notes:
 https://codesachin.wordpress.com/2015/11/14/k-means-clustering-with-tensorflow/

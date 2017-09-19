@@ -19,5 +19,5 @@ pageStats = sqlContext.sql("""
 """)
 
 pageStats.rdd.saveAsTextFile(
-    path="s3://testradek-123/page-stats/"
+    path="s3://radek-training/page-stats/"
 )

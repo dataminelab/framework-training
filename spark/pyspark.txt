@@ -1,10 +1,13 @@
 
+# First start with spark.txt
+
 # Start pyspark
 
 pyspark
 
-wordcounts = sc.textFile('s3://testbucket-radek/hamlet.txt') \
-        .map( lambda x: x.replace(',',' ').replace('.',' ').replace('-',' ').lower()) \
+words = sc.textFile('s3://radek-training/hamlet.txt').cache()
+
+wordcounts = words.map( lambda x: x.replace(',',' ').replace('.',' ').replace('-',' ').lower()) \
         .flatMap(lambda x: x.split()) \
         .map(lambda x: (x, 1)) \
         .reduceByKey(lambda x,y:x+y) \
@@ -12,25 +15,40 @@ wordcounts = sc.textFile('s3://testbucket-radek/hamlet.txt') \
         .sortByKey(False) 
 wordcounts.take(10)
 
+numAs = words.filter(lambda s: 'Hamlet' in s).count()
+numBs = words.filter(lambda s: 'King' in s).count()
+
+print("Lines with Hamlet: %i, lines with King: %i" % (numAs, numBs))
+
 # Submit SimpleApp.py
 
+checkout the code
+```
+sudo yum install -y git
+git clone https://github.com/dataminelab/framework-training.git
+cd framework-training/spark/
+```
+
 spark-submit --master local[4] SimpleApp.py
+
+# To submit this on yarn-cluster
+
+aws s3 cp ./SimpleApp.py s3://radek-training/
+
+spark-submit --verbose --deploy-mode cluster --master yarn-cluster --num-executors 2 --executor-memory 1g s3://radek-training/SimpleApp.py
 
 # PySpark and SQL
 
 spark-submit --master local[4] SparkSql.py
 
-or submit it to yarn-cluster
+or submit it to yarn-client
 
 spark-submit --master yarn-client ./SparkSql.py
 
-# Few options for adding spark step to the EMR cluster
+or spark cluster
 
-aws emr add-steps --cluster-id <your-cluster-job-id> --steps Name=Python Job,Jar=http://s3://elasticmapreduce/libs/script-runner/script-runner.jar,Args=[/home/hadoop/spark/bin/spark-submit,--deploy-mode,cluster,--master,yarn,s3://my_bucket/path/pythonjob.py,<comma separated list of arguments for your app>],ActionOnFailure=CONTINUE
+aws s3 cp ./SparkSql.py s3://radek-training/
 
-Or:
-http://docs.aws.amazon.com/ElasticMapReduce/latest/DeveloperGuide/emr-spark-submit-step.html
+spark-submit --verbose --deploy-mode cluster --master yarn-cluster --num-executors 2 --executor-memory 1g s3://radek-training/SparkSql.py
 
-Another option with Data Pipeline:
-https://forums.aws.amazon.com/thread.jspa?threadID=221452
 

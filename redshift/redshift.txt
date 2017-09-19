@@ -5,7 +5,7 @@ dc1.large
 
 # Install pgsql client
 
-sudo yum install postgresql
+sudo yum install -y postgresql
 
 # You can also find a JDBC driver for your client program here
 See: http://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-connection.html
@@ -14,7 +14,13 @@ Use JDBC Class: com.amazon.redshift.jdbc4.Driver
 
 # Connect to Redshift
 
+Authorise your IP address in security group connections
+Use CIDR/IP with your IP address
+
+
 psql -h cluster-name.chcbiiy009es.us-east-1.redshift.amazonaws.com -U username -p 5439 -d database_name
+
+Or use other tools, eg. IntelliJ IDEA
 
 # Import tables
 See load_data.sql

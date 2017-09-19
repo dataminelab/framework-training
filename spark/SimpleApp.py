@@ -6,12 +6,16 @@
 """SimpleApp.py"""
 from pyspark import SparkContext
 
-logFile = "s3://test-radek123/hamlet.txt"  # Should be some file on your system
 sc = SparkContext("local", "Simple App")
 
-logData = sc.textFile(logFile).cache()
+words = sc.textFile('s3://radek-training/hamlet.txt')
 
-numAs = logData.filter(lambda s: 'Hamlet' in s).count()
-numBs = logData.filter(lambda s: 'King' in s).count()
+wordcounts = words \
+        .map( lambda x: x.replace(',',' ').replace('.',' ').replace('-',' ').lower()) \
+        .flatMap(lambda x: x.split()) \
+        .map(lambda x: (x, 1)) \
+        .reduceByKey(lambda x,y:x+y) \
+        .map(lambda x:(x[1],x[0])) \
+        .sortByKey(False) 
 
-print("Lines with Hamlet: %i, lines with King: %i" % (numAs, numBs))
+wordcounts.saveAsTextFile("s3://radek-training/wordcount-hamlet")
