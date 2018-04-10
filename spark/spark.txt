@@ -94,7 +94,7 @@ aws s3 cp ./target/scala-2.11/sparkexamples_2.11-1.0.jar s3://radek-training/
 
 Submit job to EMR:
 ```
-spark-submit --verbose --deploy-mode cluster --master yarn-cluster --num-executors 2 --executor-memory 1g --class S3WordCount s3://radek-training/sparkexamples_2.11-1.0.jar 
+spark-submit --verbose --deploy-mode cluster --master yarn-cluster --num-executors 2 --executor-memory 1g --class dataset.S3WordCount s3://radek-training/sparkexamples_2.11-1.0.jar 
 ```
 
 Alternatively copy the `jar` file into your S3 bucket.

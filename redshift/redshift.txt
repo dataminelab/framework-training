@@ -3,9 +3,16 @@
 dc1.large
 4 nodes
 
-# Install pgsql client
+# On Linux you might Install pgsql client
 
 sudo yum install -y postgresql
+
+# On Desktop use SQL workbench
+
+http://www.sql-workbench.net/downloads.html
+
+See for details:
+http://docs.aws.amazon.com/redshift/latest/mgmt/connecting-using-workbench.html
 
 # You can also find a JDBC driver for your client program here
 See: http://docs.aws.amazon.com/redshift/latest/mgmt/configure-jdbc-connection.html

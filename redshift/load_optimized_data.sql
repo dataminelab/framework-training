@@ -85,6 +85,7 @@ copy dwdate from 's3://awssampledbuswest2/ssbgz/dwdate'
 credentials 'aws_access_key_id=<Your-Access-Key-ID>;aws_secret_access_key=<Your-Secret-Access-Key>' 
 gzip region 'us-west-2';
 
+## Be patient! It might take ~15m
 copy lineorder from 's3://awssampledbuswest2/ssbgz/lineorder' 
 credentials 'aws_access_key_id=<Your-Access-Key-ID>;aws_secret_access_key=<Your-Secret-Access-Key>'
 gzip region 'us-west-2';
